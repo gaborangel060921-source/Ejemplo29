@@ -1,0 +1,254 @@
+<!--
+INGRESOS
+-->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingresos | Panel de Portería — SENA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="admin-layout d-flex">
+
+        <!-- Fondo oscuro que aparece detrás del sidebar cuando está abierto en móvil -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <!-- ===================== SIDEBAR DE NAVEGACIÓN — PORTERÍA ===================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <!-- Logo institucional -->
+            <div class="sidebar-header">
+                <div class="logo-box d-flex align-items-center justify-content-center">S</div>
+                <div>
+                    <div class="sidebar-brand-name">SENA</div>
+                    <div class="sidebar-brand-sub">CONTROL ACCESO</div>
+                </div>
+            </div>
+
+            <!-- Datos del portero conectado -->
+            <div class="sidebar-user-box sidebar-user-box-portero">
+                <div class="sidebar-user-role sidebar-user-role-portero">Portero</div>
+                <div class="sidebar-user-name">Juan Portero García</div>
+            </div>
+
+            <!-- Turno actual -->
+            <div class="turno-box">
+                <div class="turno-box-label">Turno Actual</div>
+                <div class="turno-box-time"><span class="turno-dot"></span> 07:00 – 15:00</div>
+            </div>
+
+            <!-- Menú principal de navegación -->
+            <nav class="nav-menu-portero">
+                <div class="nav-section-label">Panel de Portería</div>
+                <ul class="nav-menu">
+                    <li><a href="escanear-qr.html" class="nav-link"><i class="bi bi-grid-1x2-fill"></i> Escanear QR</a></li>
+                    <li><a href="registrar-usuario.html" class="nav-link"><i class="bi bi-person-plus-fill"></i> Registrar Usuario</a></li>
+                    <li><a href="registros.html" class="nav-link active"><i class="bi bi-clock-history"></i> Ingresos</a></li>
+                </ul>
+            </nav>
+
+            <!-- Cerrar sesión: vuelve a la pantalla de login -->
+            <div class="sidebar-footer">
+                <a href="index.html" class="logout-link">
+                    <i class="bi bi-box-arrow-left"></i> Cerrar Sesión
+                </a>
+            </div>
+        </aside>
+
+        <!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+        <div class="admin-main">
+
+            <!-- Barra superior -->
+            <header class="topbar d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <!-- Botón hamburguesa: solo visible en móvil/tablet -->
+                    <button class="menu-toggle-btn" id="btnToggleSidebar" aria-label="Abrir menú">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="topbar-title">Ingresos</h1>
+                        <p class="topbar-subtitle">Panel de Portería</p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <span class="turno-activo-badge"><i class="bi bi-circle-fill" style="font-size:0.5rem;"></i> Turno activo</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="avatar-circle avatar-circle-portero">JP</div>
+                        <div class="d-none d-sm-block">
+                            <div class="user-name">Juan</div>
+                            <div class="user-role">Portero</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Contenido de la página -->
+            <main class="admin-content">
+
+                <div class="mb-4">
+                    <h2 class="page-title mb-1">Ingresos Recientes</h2>
+                    <p class="page-subtitle mb-0">Últimos accesos registrados en tu turno</p>
+                </div>
+
+                <!-- Tarjetas de resumen -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-4">
+                        <div class="stat-card">
+                            <div class="stat-label mb-2">Ingresos Hoy</div>
+                            <div class="stat-value" style="color: var(--success-color);">5</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="stat-card">
+                            <div class="stat-label mb-2">Salidas Hoy</div>
+                            <div class="stat-value" style="color: #d97706;">1</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <div class="stat-card">
+                            <div class="stat-label mb-2">En Instalaciones</div>
+                            <div class="stat-value" style="color: var(--primary-color);">4</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de registros recientes -->
+                <div class="panel-card">
+                    <div class="table-responsive">
+                        <table class="table-custom" id="tablaRegistros">
+                            <thead>
+                                <tr>
+                                    <th>Persona</th>
+                                    <th>Documento</th>
+                                    <th>Hora</th>
+                                    <th>Tipo</th>
+                                    <th>Dispositivo</th>
+                                    <th>Vehículo</th>
+                                    <th>Estado de elementos</th>
+                                    <th>Portero</th>
+                                    <th>Registro</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpoTablaRegistros">
+                                <!--
+                                    NOTA PARA MÁS ADELANTE: estas filas están escritas
+                                    "a mano" como maqueta visual. Cuando conectes el
+                                    backend, lo normal es generarlas dinámicamente con
+                                    JavaScript a partir de los datos que te devuelva la
+                                    API, en vez de escribirlas aquí.
+
+                                    "Estado de elementos" sigue el mismo criterio que en
+                                    Historial de Movimientos (Gestión) y en el Dashboard:
+                                    Completo = ya salió todo lo que entró con esa persona;
+                                    Pendientes = algo de lo que trajo sigue dentro.
+                                -->
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-sm avatar-circle-portero">CR</div>
+                                            <span class="fw-semibold">Carlos Rodríguez</span>
+                                        </div>
+                                    </td>
+                                    <td>1098765432</td>
+                                    <td><span class="time-badge">06:02 a. m.</span></td>
+                                    <td><span class="badge-estado badge-activo tipo-badge"><i class="bi bi-box-arrow-in-right"></i> Ingreso</span></td>
+                                    <td>Lenovo ThinkPad E14</td>
+                                    <td>—</td>
+                                    <td><span class="badge-estado badge-pendiente">Pendientes</span></td>
+                                    <td>Juan</td>
+                                    <td>Permanente</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-sm avatar-circle-portero">ML</div>
+                                            <span class="fw-semibold">María López</span>
+                                        </div>
+                                    </td>
+                                    <td>1012345678</td>
+                                    <td><span class="time-badge">05:48 a. m.</span></td>
+                                    <td><span class="badge-estado badge-activo tipo-badge"><i class="bi bi-box-arrow-in-right"></i> Ingreso</span></td>
+                                    <td>HP Pavilion 15</td>
+                                    <td>—</td>
+                                    <td><span class="badge-estado badge-pendiente">Pendientes</span></td>
+                                    <td>Juan</td>
+                                    <td>Permanente</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-sm avatar-circle-portero">SG</div>
+                                            <span class="fw-semibold">Sandra García</span>
+                                        </div>
+                                    </td>
+                                    <td>1023456789</td>
+                                    <td><span class="time-badge">05:35 a. m.</span></td>
+                                    <td><span class="badge-estado badge-activo tipo-badge"><i class="bi bi-box-arrow-in-right"></i> Ingreso</span></td>
+                                    <td>Dell Inspiron 15</td>
+                                    <td>—</td>
+                                    <td><span class="badge-estado badge-pendiente">Pendientes</span></td>
+                                    <td>Juan</td>
+                                    <td>Temporal</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-sm avatar-circle-portero">AM</div>
+                                            <span class="fw-semibold">Andrés Martínez</span>
+                                        </div>
+                                    </td>
+                                    <td>1034567890</td>
+                                    <td><span class="time-badge">05:19 a. m.</span></td>
+                                    <td><span class="badge-estado badge-activo tipo-badge"><i class="bi bi-box-arrow-in-right"></i> Ingreso</span></td>
+                                    <td>MacBook Air M2</td>
+                                    <td>—</td>
+                                    <td><span class="badge-estado badge-pendiente">Pendientes</span></td>
+                                    <td>Juan</td>
+                                    <td>Permanente</td>
+                                </tr>
+                                <!--
+                                    Esta salida (04:40 a. m.) es anterior al ingreso de
+                                    Carlos que aparece arriba (06:02 a. m.): son dos
+                                    movimientos distintos. En este, Carlos retiró el mismo
+                                    computador y el vehículo con los que había entrado
+                                    antes, así que ese ciclo queda Completo. El de las
+                                    06:02 es una entrada nueva, todavía sin salida.
+                                -->
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-sm avatar-circle-portero">CR</div>
+                                            <span class="fw-semibold">Carlos Rodríguez</span>
+                                        </div>
+                                    </td>
+                                    <td>1098765432</td>
+                                    <td><span class="time-badge">04:40 a. m.</span></td>
+                                    <td><span class="badge-estado badge-salida tipo-badge"><i class="bi bi-box-arrow-right"></i> Salida</span></td>
+                                    <td>Lenovo ThinkPad E14</td>
+                                    <td>123-ABC</td>
+                                    <td><span class="badge-estado badge-activo">Completo</span></td>
+                                    <td>Pablo</td>
+                                    <td>Temporal</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

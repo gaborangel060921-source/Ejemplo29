@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar | Panel de Portería — SENA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/registro-nuevo.css">
+</head>
+ingresos
+<!-- data-user-role="portero": la opción "Portero" del submenú/selector no
+     aplica en este panel y se elimina por completo (ver registro-flujo.js
+     y componentes.js). -->
+<body data-user-role="portero">
+
+    <div class="admin-layout d-flex">
+
+        <!-- Fondo oscuro que aparece detrás del sidebar cuando está abierto en móvil -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <!-- ===================== SIDEBAR DE NAVEGACIÓN — PORTERÍA ===================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <!-- Logo institucional -->
+            <div class="sidebar-header">
+                <div class="logo-box d-flex align-items-center justify-content-center">S</div>
+                <div>
+                    <div class="sidebar-brand-name">SENA</div>
+                    <div class="sidebar-brand-sub">CONTROL ACCESO</div>
+                </div>
+            </div>
+
+            <!-- Datos del portero conectado -->
+            <div class="sidebar-user-box sidebar-user-box-portero">
+                <div class="sidebar-user-role sidebar-user-role-portero">Portero</div>
+                <div class="sidebar-user-name">Juan Portero García</div>
+            </div>
+
+            <!-- Turno actual -->
+            <div class="turno-box">
+                <div class="turno-box-label">Turno Actual</div>
+                <div class="turno-box-time"><span class="turno-dot"></span> 07:00 – 15:00</div>
+            </div>
+
+            <!-- Menú principal de navegación -->
+            <nav class="nav-menu-portero">
+                <div class="nav-section-label">Panel de Portería</div>
+                <ul class="nav-menu">
+                    <li><a href="escanear-qr.html" class="nav-link"><i class="bi bi-grid-1x2-fill"></i> Escanear QR</a>
+                    </li>
+
+                    <!-- ===== NUEVO: sección desplegable "Registrar" =====
+                         Reemplaza el enlace único "Registrar Usuario".
+                         Misma lógica que el sidebar del panel administrativo
+                         (ver componentes.js -> inicializarMenuRegistrar()),
+                         pero sin la opción "Portero" porque este rol no
+                         tiene permisos para registrar porteros. -->
+                    <li class="nav-item-dropdown">
+                        <button type="button" class="nav-link nav-link-dropdown" id="btnRegistrarDropdown"
+                            aria-expanded="false" aria-controls="registrarSubmenu">
+                            <i class="bi bi-person-plus-fill"></i>
+                            <span>Registrar</span>
+                            <i class="bi bi-chevron-down nav-dropdown-caret"></i>
+                        </button>
+
+                        <ul class="nav-submenu" id="registrarSubmenu">
+                            <li>
+                                <a href="registrar-usuario.html?tipo=usuario" class="nav-sublink" data-registro-tipo="usuario">
+                                    <i class="bi bi-person-fill"></i> Usuario
+                                </a>
+                            </li>
+                            <li>
+                                <a href="registrar-usuario.html?tipo=computador" class="nav-sublink" data-registro-tipo="computador">
+                                    <i class="bi bi-laptop-fill"></i> Computador
+                                </a>
+                            </li>
+                            <li>
+                                <a href="registrar-usuario.html?tipo=vehiculo" class="nav-sublink" data-registro-tipo="vehiculo">
+                                    <i class="bi bi-car-front-fill"></i> Vehículo
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Cerrar sesión: vuelve a la pantalla de login -->
+            <div class="sidebar-footer">
+                <a href="index.html" class="logout-link">
+                    <i class="bi bi-box-arrow-left"></i> Cerrar Sesión
+                </a>
+            </div>
+        </aside>
+
+        <!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+        <div class="admin-main">
+
+            <!-- Barra superior -->
+            <header class="topbar d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <!-- Botón hamburguesa: solo visible en móvil/tablet -->
+                    <button class="menu-toggle-btn" id="btnToggleSidebar" aria-label="Abrir menú">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="topbar-title">Registrar</h1>
+                        <p class="topbar-subtitle">Panel de Portería</p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <span class="turno-activo-badge"><i class="bi bi-circle-fill" style="font-size:0.5rem;"></i> Turno
+                        activo</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="avatar-circle avatar-circle-portero">JP</div>
+                        <div class="d-none d-sm-block">
+                            <div class="user-name">Juan</div>
+                            <div class="user-role">Portero</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Contenido de la página -->
+            <main class="admin-content">
+
+                <div class="mb-4">
+                    <h2 class="page-title mb-1">¿Qué quieres registrar?</h2>
+                    <p class="page-subtitle mb-0">Selecciona una opción para continuar</p>
+                </div>
+
+                <!--
+                    NOTA: toda la lógica de este flujo (selector de
+                    tarjetas, formularios, usuarios temporales, código de
+                    entrada/salida) vive en js/registro-flujo.js,
+                    compartido con registrar_general.html (panel
+                    administrativo), para no duplicar comportamiento.
+                    Todavía NO envía nada a un backend real más allá del
+                    código temporal, que se guarda en localStorage como
+                    simulación de base de datos. Los puntos de envío están
+                    marcados con // TODO backend dentro de ese archivo.
+                -->
+
+                <!-- ===================== SELECTOR: USUARIO / COMPUTADOR / VEHÍCULO ===================== -->
+                <div class="registro-selector-grid mb-4" id="registroSelectorGrid">
+                    <button type="button" class="registro-selector-card" data-registro="usuario">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Usuario</span>
+                    </button>
+                    <button type="button" class="registro-selector-card" data-registro="computador">
+                        <i class="bi bi-laptop-fill"></i>
+                        <span>Computador</span>
+                    </button>
+                    <button type="button" class="registro-selector-card" data-registro="vehiculo">
+                        <i class="bi bi-car-front-fill"></i>
+                        <span>Vehículo</span>
+                    </button>
+                </div>
+
+                <!-- ===================== PANEL: USUARIO ===================== -->
+                <div class="panel-card d-none" style="max-width: 620px;" id="panelUsuario">
+                    <button type="button" class="btn-volver-selector"><i class="bi bi-arrow-left"></i> Volver</button>
+                    <div class="step-card-title">Registrar Usuario</div>
+
+                    <div class="tipo-usuario-toggle">
+                        <button type="button" id="btnTipoPermanente" class="active">Permanente</button>
+                        <button type="button" id="btnTipoTemporal">Temporal</button>
+                    </div>
+
+                    <!-- Usuario permanente -->
+                    <div id="formUsuarioPermanenteWrap">
+                        <form id="formRegistrarUsuario" onsubmit="return false;">
+
+                            <div class="mb-3">
+                                <label for="ruNombre" class="field-label">Nombre Completo</label>
+                                <input type="text" class="form-control custom-input" id="ruNombre"
+                                    placeholder="Juan Pérez">
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-sm-6">
+                                    <label for="ruDocumento" class="field-label">Documento</label>
+                                    <input type="text" class="form-control custom-input" id="ruDocumento"
+                                        placeholder="1098765432">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="ruCentro" class="field-label">Centro</label>
+                                <select class="form-control custom-input" id="ruCentro">
+                                    <option value="" selected>Selecciona una opción</option>
+                                    <option>CTGI</option>
+                                    <option>CTMA</option>
+                                    <option>CDHC</option>
+                                </select>
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-12 col-sm-6">
+                                    <label for="ruPassword" class="field-label">Contraseña</label>
+                                    <input type="password" class="form-control custom-input" id="ruPassword"
+                                        placeholder="Mínimo 6 caracteres">
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <label for="ruPasswordConfirmar" class="field-label">Confirmar contraseña</label>
+                                    <input type="password" class="form-control custom-input" id="ruPasswordConfirmar"
+                                        placeholder="Mínimo 6 caracteres">
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn-registrar-custom w-100 justify-content-center"
+                                id="btnRegistrarPersona">
+                                <i class="bi bi-check-circle-fill"></i> Registrar Persona
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Usuario temporal: solo lo esencial + datos opcionales -->
+                    <div class="d-none" id="formUsuarioTemporalWrap">
+                        <form id="formRegistrarTemporal" onsubmit="return false;">
+
+                            <div class="mb-3">
+                                <label for="rtNombre" class="field-label">Nombre de la persona</label>
+                                <input type="text" class="form-control custom-input" id="rtNombre"
+                                    placeholder="Nombre completo">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="rtDocumento" class="field-label">Documento</label>
+                                <input type="text" class="form-control custom-input" id="rtDocumento"
+                                    placeholder="1098765432">
+                            </div>
+
+                            <!-- Dispositivo: ambos campos opcionales, la persona puede llegar sin equipo -->
+                            <div class="temporal-opcional-titulo">
+                                <i class="bi bi-laptop"></i> Dispositivo <span class="text-muted">(opcional)</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="rtSerial" class="field-label">Serial del dispositivo</label>
+                                <input type="text" class="form-control custom-input" id="rtSerial"
+                                    placeholder="Si trae computador o portátil">
+                            </div>
+
+                            <!-- Foto del dispositivo: solo maqueta visual, sin acceso real a cámara -->
+                            <div class="device-photo-box mb-4">
+                                <i class="bi bi-camera"></i>
+                                <div class="device-photo-title">Foto del dispositivo</div>
+                                <div class="device-photo-hint">Solo si la persona ingresa con equipo</div>
+                                <button type="button" class="btn-camera" id="rtFotoDispositivoBtn">
+                                    <i class="bi bi-camera"></i> Abrir cámara
+                                </button>
+                            </div>
+
+                            <!-- Vehículo: ambos campos opcionales, la persona puede llegar caminando -->
+                            <div class="temporal-opcional-titulo">
+                                <i class="bi bi-car-front"></i> Vehículo <span class="text-muted">(opcional)</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="rtPlaca" class="field-label">Placa del vehículo</label>
+                                <input type="text" class="form-control custom-input text-uppercase" id="rtPlaca"
+                                    placeholder="Si ingresa en vehículo" maxlength="6">
+                            </div>
+
+                            <!-- Foto del vehículo: solo maqueta visual, sin acceso real a cámara -->
+                            <div class="device-photo-box mb-4">
+                                <i class="bi bi-camera"></i>
+                                <div class="device-photo-title">Foto del vehículo</div>
+                                <div class="device-photo-hint">Solo si la persona ingresa con vehículo</div>
+                                <button type="button" class="btn-camera" id="rtFotoVehiculoBtn">
+                                    <i class="bi bi-camera"></i> Abrir cámara
+                                </button>
+                            </div>
+
+                            <button type="button" class="btn-registrar-custom w-100 justify-content-center"
+                                id="btnRegistrarTemporal">
+                                <i class="bi bi-check-circle-fill"></i> Registrar Temporal
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ===================== PANEL: COMPUTADOR ===================== -->
+                <div class="panel-card d-none" style="max-width: 620px;" id="panelComputador">
+                    <button type="button" class="btn-volver-selector"><i class="bi bi-arrow-left"></i> Volver</button>
+                    <div class="step-card-title">Registrar Computador</div>
+
+                    <form id="formRegistrarDispositivoPortero" onsubmit="return false;">
+
+                        <div class="mb-3">
+                            <label for="rdDocumentoPropietario" class="field-label">Documento del propietario</label>
+                            <input type="text" class="form-control custom-input" id="rdDocumentoPropietario"
+                                placeholder="1098765432">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="rdMarcaModelo" class="field-label">Marca / Modelo</label>
+                            <input type="text" class="form-control custom-input" id="rdMarcaModelo"
+                                placeholder="Dell Latitude 5420">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="rdSerial" class="field-label">Número de Serial</label>
+                            <input type="text" class="form-control custom-input" id="rdSerial"
+                                placeholder="LNV-2024-0001">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="rdObservaciones" class="field-label">Detalles</label>
+                            <input type="text" class="form-control custom-input" id="rdObservaciones"
+                                placeholder="Descripción del equipo">
+                        </div>
+
+                        <!-- Foto del dispositivo: solo maqueta visual, sin acceso real a cámara -->
+                        <div class="device-photo-box mb-4">
+                            <i class="bi bi-camera"></i>
+                            <div class="device-photo-title">Fotografía del dispositivo</div>
+                            <div class="device-photo-hint">Toma una fotografía del equipo para el registro</div>
+                            <button type="button" class="btn-camera">
+                                <i class="bi bi-camera"></i> Abrir cámara
+                            </button>
+                        </div>
+
+                        <button type="button" class="btn-registrar-custom w-100 justify-content-center"
+                            id="btnRegistrarComputador">
+                            <i class="bi bi-check-circle-fill"></i> Registrar Computador
+                        </button>
+                    </form>
+                </div>
+
+                <!-- ===================== PANEL: VEHÍCULO ===================== -->
+                <div class="panel-card d-none" style="max-width: 620px;" id="panelVehiculo">
+                    <button type="button" class="btn-volver-selector"><i class="bi bi-arrow-left"></i> Volver</button>
+                    <div class="step-card-title">Registrar Vehículo</div>
+
+                    <form id="formRegistrarVehiculoPortero" onsubmit="return false;">
+                        <div class="mb-3">
+                            <label for="rvDocumentoPropietario" class="field-label">Documento del propietario</label>
+                            <input type="text" class="form-control custom-input" id="rvDocumentoPropietario"
+                                placeholder="1098765432">
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-sm-6">
+                                <label for="rvPlaca" class="field-label">Placa</label>
+                                <input type="text" class="form-control custom-input text-uppercase" id="rvPlaca"
+                                    placeholder="ABC123" maxlength="6">
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label for="rvTipoVehiculo" class="field-label">Tipo de Vehículo</label>
+                                <select class="form-control custom-input" id="rvTipoVehiculo">
+                                    <option value="" selected>Selecciona una opción</option>
+                                    <option value="carro">Carro</option>
+                                    <option value="moto">Moto</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="rvDetalle" class="field-label">Detalle del Vehículo</label>
+                            <input type="text" class="form-control custom-input" id="rvDetalle"
+                                placeholder="Marca, color, características...">
+                        </div>
+
+                        <!-- Foto del vehículo: solo maqueta visual, sin acceso real a cámara -->
+                        <div class="device-photo-box mb-4">
+                            <i class="bi bi-camera"></i>
+                            <div class="device-photo-title">Fotografía del vehículo</div>
+                            <div class="device-photo-hint">Toma una fotografía del vehículo para el registro</div>
+                            <button type="button" class="btn-camera">
+                                <i class="bi bi-camera"></i> Abrir cámara
+                            </button>
+                        </div>
+
+                        <button type="button" class="btn-registrar-custom w-100 justify-content-center"
+                            id="btnRegistrarVehiculo">
+                            <i class="bi bi-check-circle-fill"></i> Registrar Vehículo
+                        </button>
+                    </form>
+                </div>
+
+                <!-- ===================== CONFIRMACIÓN GENÉRICA ===================== -->
+                <!-- Usada para: usuario permanente, computador y vehículo -->
+                <div class="panel-card d-none" style="max-width: 620px;" id="confirmacionCard">
+                    <div class="confirmacion-box">
+                        <div class="confirmacion-icono"><i class="bi bi-check-lg"></i></div>
+                        <div class="confirmacion-titulo" id="confirmacionTitulo"></div>
+                        <div class="confirmacion-subtitulo" id="confirmacionSubtitulo"></div>
+                        <button type="button" class="btn-registrar-custom w-100 justify-content-center mt-3"
+                            id="btnConfirmOtro">
+                            <i class="bi bi-arrow-repeat"></i> Registrar otro
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ===================== CÓDIGO TEMPORAL (usuario temporal) ===================== -->
+                <div class="panel-card d-none" style="max-width: 620px;" id="codigoTemporalCard">
+                    <div class="codigo-temporal-box">
+                        <div class="codigo-temporal-icono"><i class="bi bi-check-circle-fill"></i></div>
+                        <div class="codigo-temporal-titulo">Usuario temporal registrado correctamente</div>
+                        <div class="codigo-temporal-subtitulo">Código de ingreso/salida</div>
+                        <div class="codigo-temporal-valor" id="codigoTemporalValor">TEMP-000000</div>
+
+                        <div class="codigo-temporal-acciones">
+                            <button type="button" class="btn-registrar-custom" id="btnCopiarCodigo">
+                                <i class="bi bi-clipboard-check"></i> Copiar código
+                            </button>
+                            <button type="button" class="btn-outline-custom" id="btnImprimirCodigo">
+                                <i class="bi bi-printer"></i> Imprimir
+                            </button>
+                            <button type="button" class="btn-outline-custom" id="btnCodigoOtro">
+                                <i class="bi bi-arrow-repeat"></i> Registrar otro
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/componentes.js"></script>
+    <script src="js/registro-flujo.js"></script>
+</body>
+
+</html>

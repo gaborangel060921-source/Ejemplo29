@@ -1,0 +1,943 @@
+
+
+<!--
+
+Historial de Ingresos DE DISPOSITIVOS, PERSONAS, VEHICULOS
+
+-->
+
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Ingresos | Panel Administrativo — SENA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!--
+        ===================================================================
+        NUEVO: estilos para los botones de "Filtrar por fecha" y
+        "Generar reporte". Cuando puedas, mueve todo este bloque <style>
+        a tu archivo css/styles.css y borra el bloque de aquí.
+        (Es el mismo bloque que se agregó en auditoria.html)
+        ===================================================================
+    -->
+    <style>
+        /* Barra de acciones (filtros / reportes) */
+        .toolbar-acciones {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-toolbar-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all .18s ease;
+            white-space: nowrap;
+        }
+
+        .btn-toolbar-outline:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-dark);
+            background: var(--success-bg);
+        }
+
+        .btn-toolbar-outline i {
+            font-size: 1rem;
+            color: var(--primary-color);
+        }
+
+        .btn-toolbar-solid {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: var(--secondary-color);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all .18s ease;
+            white-space: nowrap;
+        }
+
+        .btn-toolbar-solid:hover {
+            background: #5a1f62;
+            color: #fff;
+        }
+
+        /* Panel desplegable genérico (fecha / reportes) */
+        .dropdown-panel-wrapper {
+            position: relative;
+        }
+
+        .dropdown-panel {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            z-index: 1050; /* por encima del sidebar (que suele usar ~900-1000) */
+            min-width: 280px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 30px rgba(0, 48, 77, 0.15);
+            padding: 16px;
+            display: none;
+        }
+
+        .dropdown-panel.show {
+            display: block;
+        }
+
+        .dropdown-panel-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .quick-date-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .quick-date-btn {
+            padding: 7px 10px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border-color);
+            background: var(--background-color);
+            color: var(--text-dark);
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all .15s ease;
+        }
+
+        .quick-date-btn:hover,
+        .quick-date-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .date-range-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .date-range-row .form-control {
+            border-radius: 8px;
+            border: 1.5px solid var(--border-color);
+            font-size: 0.82rem;
+            padding: 7px 10px;
+        }
+
+        .dropdown-panel-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .btn-panel-clear {
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        .btn-panel-clear:hover {
+            color: var(--danger-color);
+        }
+
+        .btn-panel-apply {
+            padding: 7px 16px;
+            border-radius: 8px;
+            border: none;
+            background: var(--primary-color);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        .btn-panel-apply:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Opciones dentro del panel de reportes */
+        .report-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 10px;
+            border-radius: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background .15s ease;
+        }
+
+        .report-option:hover {
+            background: var(--secondary-bg);
+        }
+
+        .report-option i {
+            font-size: 1.1rem;
+            width: 22px;
+            text-align: center;
+        }
+
+        .report-option .icon-pdf {
+            color: var(--danger-color);
+        }
+
+        .report-option .icon-excel {
+            color: var(--primary-color);
+        }
+
+        .report-option .icon-print {
+            color: var(--primary-light);
+        }
+
+        .active-filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--success-bg);
+            color: var(--success-text);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+
+        .active-filter-tag i {
+            cursor: pointer;
+        }
+
+        @media (max-width: 576px) {
+            .dropdown-panel {
+                right: -40px;
+                min-width: 260px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-layout d-flex">
+
+        <!-- Fondo oscuro que aparece detrás del sidebar cuando está abierto en móvil -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <!-- ===================== SIDEBAR DE NAVEGACIÓN ===================== -->
+        <div id="sidebar-container"></div>
+
+        <!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+        <div class="admin-main">
+
+            <!-- Barra superior -->
+            <header class="topbar d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <!-- Botón hamburguesa: solo visible en móvil/tablet -->
+                    <button class="menu-toggle-btn" id="btnToggleSidebar" aria-label="Abrir menú">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="topbar-title">Historial de Ingresos</h1>
+                        <p class="topbar-subtitle">Panel Administrativo</p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                </div>
+            </header>
+
+            <!-- Contenido de la página -->
+            <main class="admin-content">
+
+                <!-- Historial de Ingresos de entradas y salidas -->
+                <div class="panel-card mb-4">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                        <div>
+                            <span class="panel-card-title d-block">Historial</span>
+                            <span class="page-subtitle" id="totalHistorialTexto">Buscar nombre, documento, centro,
+                                fecha, matricula, serial, portero, activos/inactivos </span>
+                        </div>
+                        <div class="filter-pills" id="filtrosHistorial">
+                            <button type="button" class="filter-pill-btn active" data-filtro="todos">Todos</button>
+                            <button type="button" class="filter-pill-btn" data-filtro="ingreso">Ingresos</button>
+                            <button type="button" class="filter-pill-btn" data-filtro="salida">Salidas</button>
+                        </div>
+
+                        <!-- NUEVO: barra de acciones (filtrar por fecha / generar reporte) -->
+                        <div class="toolbar-acciones">
+                            <span class="active-filter-tag d-none" id="tagFiltroFechaHistorial">
+                                <i class="bi bi-calendar-event"></i>
+                                <span id="tagFiltroFechaHistorialTexto">Filtro activo</span>
+                                <i class="bi bi-x-lg" onclick="limpiarFiltroFechaHistorial()"></i>
+                            </span>
+
+                            <!-- Botón: filtrar por fecha -->
+                            <div class="dropdown-panel-wrapper">
+                                <button type="button" class="btn-toolbar-outline" id="btnFiltrarFechaHistorial" onclick="togglePanel('panelFiltrarFechaHistorial', 'panelGenerarReporteHistorial')">
+                                    <i class="bi bi-calendar3"></i> Filtrar por fecha
+                                </button>
+                                <div class="dropdown-panel" id="panelFiltrarFechaHistorial">
+                                    <div class="dropdown-panel-title">Filtrar historial por fecha</div>
+                                    <div class="quick-date-grid" id="quickDatesHistorial">
+                                        <button type="button" class="quick-date-btn" data-rango="hoy">Hoy</button>
+                                        <button type="button" class="quick-date-btn" data-rango="ayer">Ayer</button>
+                                        <button type="button" class="quick-date-btn" data-rango="semana">Esta semana</button>
+                                        <button type="button" class="quick-date-btn" data-rango="mes">Este mes</button>
+                                    </div>
+                                    <div class="date-range-row">
+                                        <input type="date" class="form-control custom-input" id="fechaDesdeHistorial" placeholder="Desde">
+                                        <input type="date" class="form-control custom-input" id="fechaHastaHistorial" placeholder="Hasta">
+                                    </div>
+                                    <div class="dropdown-panel-actions">
+                                        <button type="button" class="btn-panel-clear" onclick="limpiarFiltroFechaHistorial()">Limpiar</button>
+                                        <button type="button" class="btn-panel-apply" onclick="aplicarFiltroFechaHistorial()">Aplicar</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botón: generar reporte -->
+                            <div class="dropdown-panel-wrapper">
+                                <button type="button" class="btn-toolbar-solid" id="btnGenerarReporteHistorial" onclick="togglePanel('panelGenerarReporteHistorial', 'panelFiltrarFechaHistorial')">
+                                    <i class="bi bi-file-earmark-arrow-down"></i> Generar reporte
+                                </button>
+                                <div class="dropdown-panel" id="panelGenerarReporteHistorial">
+                                    <div class="dropdown-panel-title">Exportar movimientos</div>
+                                    <div class="report-option" onclick="generarReporteHistorial('pdf')">
+                                        <i class="bi bi-file-earmark-pdf icon-pdf"></i> Exportar a PDF
+                                    </div>
+                                    <div class="report-option" onclick="generarReporteHistorial('excel')">
+                                        <i class="bi bi-file-earmark-excel icon-excel"></i> Exportar a Excel
+                                    </div>
+                                    <div class="report-option" onclick="generarReporteHistorial('imprimir')">
+                                        <i class="bi bi-printer icon-print"></i> Imprimir
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                        <div class="search-input-wrapper flex-grow-1" style="max-width: 420px;">
+                            <i class="bi bi-search"></i>
+                            <input type="text" class="form-control custom-input" id="inputBuscarUsuario"
+                                placeholder="Buscar por usuario, documento, portero o centro">
+                        </div>
+                        <span class="results-badge" id="resultadosBadge">4 resultados</span>
+                    </div>
+                    <!--
+                        NOTA PARA MÁS ADELANTE: estas filas están escritas
+                        "a mano" como maqueta visual, en orden cronológico
+                        (más reciente primero). Cuando conectes el backend,
+                        lo normal es generarlas dinámicamente con JavaScript
+                        a partir del registro de accesos de la API.
+                    -->
+                    <div class="table-responsive">
+                        <table class="table-custom" id="tablaHistorial">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Documento</th>
+                                    <th>Movimiento</th>
+                                    <th>Fecha y hora</th>
+                                    <th>Computadores</th>
+                                    <th>Vehículos</th>
+                                    <th>Estado de elementos</th>
+                                    <th>Portero</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpoTablaHistorial">
+                                <!--
+                                    NOTA PARA MÁS ADELANTE: estas filas son una maqueta
+                                    visual. Un movimiento puede tener 0, 1 o varios
+                                    dispositivos/vehículos asociados: cuando hay más de
+                                    uno se resume como "N computadores"/"N vehículos" o
+                                    "Primer nombre + N más", y la lista completa se ve en
+                                    "Ver detalle". No se limita a 1 dispositivo + 1
+                                    vehículo por movimiento.
+
+                                    "Estado de elementos" es independiente del estado del
+                                    usuario (dentro/fuera). Se calcula comparando, para los
+                                    elementos que participaron en un ingreso, si ya existe
+                                    una salida posterior que los haya retirado:
+                                      - Completo   -> todos esos elementos ya salieron.
+                                      - Pendientes -> al menos uno sigue dentro.
+                                    Cuando conectes el backend, este valor debería venir
+                                    calculado desde la API (o derivarse cruzando los
+                                    movimientos de ingreso/salida de cada elemento), no
+                                    escribirse a mano como aquí.
+                                -->
+                                <tr data-tipo="ingreso">
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-sm">CA</div>
+                                            <span class="fw-semibold">Carlos Andrés Rodríguez</span>
+                                        </div>
+                                    </td>
+                                    <td>1098765432</td>
+                                    <td><span class="badge-estado badge-activo tipo-badge"><i
+                                                class="bi bi-box-arrow-in-right"></i> Ingreso</span></td>
+                                    <td>2024-06-10 07:48</td>
+                                    <td>Lenovo ThinkPad E14</td>
+                                    <td>ABC-123</td>
+                                    <td><span class="badge-estado badge-activo">Completo</span></td>
+                                    <td>Mauricio</td>
+                                    <td>
+                                        <button class="table-action-btn" title="Ver detalle" data-bs-toggle="modal"
+                                            data-bs-target="#modalVerMovimientoCompleto"><i
+                                                class="bi bi-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <tr data-tipo="ingreso">
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-sm">CA</div>
+                                            <span class="fw-semibold">Carlos Andrés Rodríguez</span>
+                                        </div>
+                                    </td>
+                                    <td>1098765432</td>
+                                    <td><span class="badge-estado badge-activo tipo-badge"><i
+                                                class="bi bi-box-arrow-in-right"></i> Ingreso</span></td>
+                                    <td>2024-06-10 07:48</td>
+                                    <td>Lenovo ThinkPad E14</td>
+                                    <td>ABC-123</td>
+                                    <td><span class="badge-estado badge-activo">Completo</span></td>
+                                    <td>Mauricio</td>
+                                    <td>
+                                        <button class="table-action-btn" title="Ver detalle" data-bs-toggle="modal"
+                                            data-bs-target="#modalVerMovimientoCompleto"><i
+                                                class="bi bi-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <tr data-tipo="salida">
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-sm">CA</div>
+                                            <span class="fw-semibold">Carlos Andrés Rodríguez</span>
+                                        </div>
+                                    </td>
+                                    <td>1098765432</td>
+                                    <td><span class="badge-estado badge-salida tipo-badge"><i
+                                                class="bi bi-box-arrow-right"></i> Salida</span></td>
+                                    <td>2024-06-10 10:08</td>
+                                    <td>Lenovo ThinkPad E14</td>
+                                    <td>ABC-123</td>
+                                    <td><span class="badge-estado badge-activo">Completo</span></td>
+                                    <td>Andrés Salazar</td>
+                                    <td>
+                                        <button class="table-action-btn" title="Ver detalle" data-bs-toggle="modal"
+                                            data-bs-target="#modalVerMovimientoCompleto"><i
+                                                class="bi bi-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <tr data-tipo="ingreso">
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-sm">LR</div>
+                                            <span class="fw-semibold">Laura Ríos</span>
+                                        </div>
+                                    </td>
+                                    <td>1032456789</td>
+                                    <td><span class="badge-estado badge-activo tipo-badge"><i
+                                                class="bi bi-box-arrow-in-right"></i> Ingreso</span></td>
+                                    <td>2024-06-11 08:03</td>
+                                    <td>Dell Latitude 5420 + 1 más</td>
+                                    <td>Yamaha FZ</td>
+                                    <td><span class="badge-estado badge-pendiente">Pendientes</span></td>
+                                    <td>Carlos</td>
+                                    <td>
+                                        <button class="table-action-btn" title="Ver detalle" data-bs-toggle="modal"
+                                            data-bs-target="#modalVerMovimiento"><i class="bi bi-eye"></i></button>
+                                    </td>
+                                </tr>
+                                <!--
+                                    CASO FUNDAMENTAL: Laura sale caminando más tarde ese
+                                    mismo día, sin retirar ni el computador ni el vehículo
+                                    con los que ingresó. El usuario queda "fuera", pero sus
+                                    elementos (mismos seriales/placa del ingreso de arriba)
+                                    siguen "dentro" -> columnas Computadores/Vehículos
+                                    muestran "—" (nada se retiró en ESTE movimiento) y el
+                                    estado de elementos sigue en Pendientes.
+                                -->
+                                <tr data-tipo="salida">
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-sm">LR</div>
+                                            <span class="fw-semibold">Laura Ríos</span>
+                                        </div>
+                                    </td>
+                                    <td>1032456789</td>
+                                    <td><span class="badge-estado badge-salida tipo-badge"><i
+                                                class="bi bi-box-arrow-right"></i> Salida</span></td>
+                                    <td>2024-06-11 16:00</td>
+                                    <td>—</td>
+                                    <td>—</td>
+                                    <td><span class="badge-estado badge-pendiente">Pendientes</span></td>
+                                    <td>Andrés</td>
+                                    <td>
+                                        <button class="table-action-btn" title="Ver detalle" data-bs-toggle="modal"
+                                            data-bs-target="#modalVerMovimientoPendienteSalida"><i
+                                                class="bi bi-eye"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL: VER MOVIMIENTO ===================== -->
+    <!--
+        NOTA PARA MÁS ADELANTE: maqueta visual con un movimiento de
+        ejemplo (el ingreso de Laura Ríos, que usa 2 computadores y 1
+        vehículo). Cuando conectes el backend, este modal debe llenarse
+        con los datos reales de la fila en la que se pulsó "Ver detalle".
+        Aquí se distingue claramente "elemento registrado" (lo que la
+        persona tiene a su nombre) de "elemento utilizado en este
+        movimiento" (lo que trajo esta vez).
+    -->
+    <div class="modal fade" id="modalVerMovimiento" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-custom">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de Movimiento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+
+                    <!-- Información del usuario -->
+                    <div class="pregunta-check-label mb-2">Información del usuario</div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Nombre</span>
+                        <span class="view-info-value">Laura Ríos</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Documento</span>
+                        <span class="view-info-value">1032456789</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Centro</span>
+                        <span class="view-info-value">CTGI</span>
+                    </div>
+
+                    <!-- Información del movimiento -->
+                    <div class="pregunta-check-label mt-3 mb-2">Información del movimiento</div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Tipo</span>
+                        <span class="badge-estado badge-activo tipo-badge"><i class="bi bi-box-arrow-in-right"></i> Ingreso</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Fecha</span>
+                        <span class="view-info-value">2024-06-11</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Hora</span>
+                        <span class="view-info-value">08:03</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Portero responsable</span>
+                        <span class="view-info-value">Carlos</span>
+                    </div>
+
+                    <!--
+                        Elementos INVOLUCRADOS en este movimiento. No es lo
+                        mismo que "todo lo que el usuario tiene registrado":
+                        Laura puede tener más dispositivos/vehículos a su
+                        nombre en Gestión de Usuarios, pero aquí solo se
+                        listan los que realmente usó esta vez. Cada uno
+                        muestra su "Estado actual" de permanencia (Dentro /
+                        Fuera), que es independiente del estado de registro
+                        del equipo (Activo/Inactivo, eso se administra en
+                        Gestión de Dispositivos y Vehículos).
+                    -->
+                    <div class="pregunta-check-label mt-3 mb-2">Computadores utilizados en este movimiento (2)</div>
+                    <div class="asociado-box">
+                        <div class="asociado-linea">
+                            <span>Equipo</span>
+                            <span>Dell Latitude 5420</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Serial</span>
+                            <span>DL5420-88231</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Estado actual</span>
+                            <span><span class="badge-estado badge-pendiente">Dentro</span></span>
+                        </div>
+                    </div>
+                    <div class="asociado-box mb-0">
+                        <div class="asociado-linea">
+                            <span>Equipo</span>
+                            <span>Lenovo ThinkPad E14</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Serial</span>
+                            <span>LNV-2024-0001</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Estado actual</span>
+                            <span><span class="badge-estado badge-pendiente">Dentro</span></span>
+                        </div>
+                    </div>
+
+                    <div class="pregunta-check-label mt-3 mb-2">Vehículos utilizados en este movimiento (1)</div>
+                    <div class="asociado-box mb-0">
+                        <div class="asociado-linea">
+                            <span>Vehículo</span>
+                            <span>Yamaha FZ</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Placa</span>
+                            <span>ABC-123</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Estado actual</span>
+                            <span><span class="badge-estado badge-pendiente">Dentro</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Como ningún elemento de este ingreso ha salido todavía, se muestra la advertencia -->
+                    <div class="pendiente-alert-box">
+                        <div class="pendiente-alert-title">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Elementos pendientes de salida
+                        </div>
+                        <div class="pendiente-alert-item">
+                            <span>Computador</span>
+                            <span>Dell Latitude 5420 — DL5420-88231</span>
+                        </div>
+                        <div class="pendiente-alert-item">
+                            <span>Computador</span>
+                            <span>Lenovo ThinkPad E14 — LNV-2024-0001</span>
+                        </div>
+                        <div class="pendiente-alert-item">
+                            <span>Vehículo</span>
+                            <span>Yamaha FZ — ABC-123</span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL: VER MOVIMIENTO — CICLO COMPLETO ===================== -->
+    <!--
+        NOTA PARA MÁS ADELANTE: maqueta visual para el caso en el que los
+        elementos que ingresaron ya volvieron a salir (Carlos Andrés
+        Rodríguez, ingreso 07:48 + salida 10:08 con el mismo equipo y
+        vehículo). Se muestra la salida por ser el movimiento que cierra
+        el ciclo. Cuando conectes el backend, este modal debe llenarse con
+        los datos reales de la fila en la que se pulsó "Ver detalle".
+    -->
+    <div class="modal fade" id="modalVerMovimientoCompleto" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-custom">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de Movimiento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="pregunta-check-label mb-2">Información del usuario</div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Nombre</span>
+                        <span class="view-info-value">Carlos Andrés Rodríguez</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Documento</span>
+                        <span class="view-info-value">1098765432</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Centro</span>
+                        <span class="view-info-value">CTGI</span>
+                    </div>
+
+                    <div class="pregunta-check-label mt-3 mb-2">Información del movimiento</div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Tipo</span>
+                        <span class="badge-estado badge-salida tipo-badge"><i
+                                class="bi bi-box-arrow-right"></i> Salida</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Fecha</span>
+                        <span class="view-info-value">2024-06-10</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Hora</span>
+                        <span class="view-info-value">10:08</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Portero responsable</span>
+                        <span class="view-info-value">Andrés Salazar</span>
+                    </div>
+
+                    <div class="pregunta-check-label mt-3 mb-2">Computadores retirados en este movimiento (1)</div>
+                    <div class="asociado-box mb-0">
+                        <div class="asociado-linea">
+                            <span>Equipo</span>
+                            <span>Lenovo ThinkPad E14</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Serial</span>
+                            <span>LNV-2024-0001</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Estado actual</span>
+                            <span><span class="badge-estado badge-activo">Fuera</span></span>
+                        </div>
+                    </div>
+
+                    <div class="pregunta-check-label mt-3 mb-2">Vehículos retirados en este movimiento (1)</div>
+                    <div class="asociado-box mb-0">
+                        <div class="asociado-linea">
+                            <span>Vehículo</span>
+                            <span>Vehículo registrado</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Placa</span>
+                            <span>ABC-123</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Estado actual</span>
+                            <span><span class="badge-estado badge-activo">Fuera</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Todos los elementos de este ingreso ya salieron: no hay advertencia -->
+                    <div class="info-alert-box">
+                        <div class="info-alert-title">
+                            <i class="bi bi-check-circle-fill"></i> Sin elementos pendientes
+                        </div>
+                        <p class="info-alert-text">El computador y el vehículo con los que Carlos ingresó ya
+                            salieron de las instalaciones.</p>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL: VER MOVIMIENTO — SALIDA CON ELEMENTOS PENDIENTES ===================== -->
+    <!--
+        NOTA PARA MÁS ADELANTE: este es el "caso fundamental" del historial:
+        Laura Ríos sale caminando a las 16:00 sin retirar el computador ni
+        el vehículo con los que había ingresado a las 08:03 (mismos
+        seriales/placa que en el modal de arriba). El usuario queda
+        "fuera", pero sus elementos siguen "dentro". Cuando conectes el
+        backend, este modal debe llenarse con los datos reales de la fila.
+    -->
+    <div class="modal fade" id="modalVerMovimientoPendienteSalida" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-custom">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de Movimiento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="pregunta-check-label mb-2">Información del usuario</div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Nombre</span>
+                        <span class="view-info-value">Laura Ríos</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Documento</span>
+                        <span class="view-info-value">1032456789</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Centro</span>
+                        <span class="view-info-value">CTGI</span>
+                    </div>
+
+                    <div class="pregunta-check-label mt-3 mb-2">Información del movimiento</div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Tipo</span>
+                        <span class="badge-estado badge-salida tipo-badge"><i
+                                class="bi bi-box-arrow-right"></i> Salida</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Fecha</span>
+                        <span class="view-info-value">2024-06-11</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Hora</span>
+                        <span class="view-info-value">16:00</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Portero responsable</span>
+                        <span class="view-info-value">Andrés</span>
+                    </div>
+
+                    <div class="pregunta-check-label mt-3 mb-2">Computadores retirados en este movimiento</div>
+                    <div class="asociado-box mb-0">
+                        <span class="asociado-vacio">Sin elementos retirados</span>
+                    </div>
+
+                    <div class="pregunta-check-label mt-3 mb-2">Vehículos retirados en este movimiento</div>
+                    <div class="asociado-box mb-0">
+                        <span class="asociado-vacio">Sin elementos retirados</span>
+                    </div>
+
+                    <!-- Laura salió sin retirar nada: sus elementos del ingreso de las 08:03 siguen dentro -->
+                    <div class="pendiente-alert-box">
+                        <div class="pendiente-alert-title">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Elementos pendientes de salida
+                        </div>
+                        <div class="pendiente-alert-item">
+                            <span>Computador</span>
+                            <span>Dell Latitude 5420 — DL5420-88231</span>
+                        </div>
+                        <div class="pendiente-alert-item">
+                            <span>Computador</span>
+                            <span>Lenovo ThinkPad E14 — LNV-2024-0001</span>
+                        </div>
+                        <div class="pendiente-alert-item">
+                            <span>Vehículo</span>
+                            <span>Yamaha FZ — ABC-123</span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/componentes.js"></script>
+
+
+    <!--
+        ===================================================================
+        NUEVO: lógica de los paneles de "Filtrar por fecha" y
+        "Generar reporte". Son funciones de ejemplo (front-end puro).
+        Cuando conectes el backend, dentro de aplicarFiltroFechaHistorial()
+        y generarReporteHistorial() debes llamar tu API real en vez de
+        solo mostrar console.log / alert.
+        ===================================================================
+    -->
+    <script>
+        // Abre un panel y cierra el otro (fecha / reporte), o cierra si ya estaba abierto
+        function togglePanel(idAbrir, idCerrar) {
+            const panelAbrir = document.getElementById(idAbrir);
+            const panelCerrar = document.getElementById(idCerrar);
+            if (panelCerrar) panelCerrar.classList.remove('show');
+            if (panelAbrir) panelAbrir.classList.toggle('show');
+        }
+
+        // Cierra los paneles si el usuario hace clic fuera de ellos
+        document.addEventListener('click', function (e) {
+            document.querySelectorAll('.dropdown-panel-wrapper').forEach(function (wrapper) {
+                if (!wrapper.contains(e.target)) {
+                    wrapper.querySelector('.dropdown-panel')?.classList.remove('show');
+                }
+            });
+        });
+
+        // Selección de rango rápido (Hoy, Ayer, Esta semana, Este mes)
+        document.querySelectorAll('#quickDatesHistorial .quick-date-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('#quickDatesHistorial .quick-date-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        function aplicarFiltroFechaHistorial() {
+            const desde = document.getElementById('fechaDesdeHistorial').value;
+            const hasta = document.getElementById('fechaHastaHistorial').value;
+            const rangoActivo = document.querySelector('#quickDatesHistorial .quick-date-btn.active');
+
+            // TODO backend: aquí debes filtrar cuerpoTablaHistorial según
+            // el rango rápido (rangoActivo?.dataset.rango) o desde/hasta,
+            // combinando con el filtro de tipo (ingreso/salida) y el
+            // buscador de texto que ya existe, o pedirle a la API los
+            // registros ya filtrados.
+            console.log('Filtrar historial =>', { rango: rangoActivo?.dataset.rango, desde, hasta });
+
+            const tag = document.getElementById('tagFiltroFechaHistorial');
+            const tagTexto = document.getElementById('tagFiltroFechaHistorialTexto');
+            if (rangoActivo) {
+                tagTexto.textContent = rangoActivo.textContent;
+                tag.classList.remove('d-none');
+            } else if (desde || hasta) {
+                tagTexto.textContent = `${desde || '...'} → ${hasta || '...'}`;
+                tag.classList.remove('d-none');
+            }
+
+            togglePanel('', 'panelFiltrarFechaHistorial');
+        }
+
+        function limpiarFiltroFechaHistorial() {
+            document.getElementById('fechaDesdeHistorial').value = '';
+            document.getElementById('fechaHastaHistorial').value = '';
+            document.querySelectorAll('#quickDatesHistorial .quick-date-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tagFiltroFechaHistorial').classList.add('d-none');
+            // TODO backend: volver a pedir/mostrar todos los registros sin filtro de fecha
+        }
+
+        function generarReporteHistorial(formato) {
+            // TODO backend: reemplazar por la llamada real que genera el
+            // reporte (PDF/Excel) con los movimientos actualmente
+            // filtrados (tipo + fecha + búsqueda), o usar window.print()
+            // tal cual para "Imprimir".
+            if (formato === 'imprimir') {
+                window.print();
+            } else {
+                console.log('Generar reporte de historial en formato:', formato);
+                alert('Generando reporte en formato ' + formato.toUpperCase() + '... (pendiente de conectar al backend)');
+            }
+            togglePanel('', 'panelGenerarReporteHistorial');
+        }
+    </script>
+</body>
+
+</html>

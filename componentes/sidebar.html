@@ -1,0 +1,122 @@
+<aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+        <div class="logo-box d-flex align-items-center justify-content-center">
+            S
+        </div>
+
+        <div>
+            <div class="sidebar-brand-name">SENA</div>
+            <div class="sidebar-brand-sub">CONTROL ACCESO</div>
+        </div>
+    </div>
+
+    <div class="sidebar-user-box">
+        <div class="sidebar-user-role">Administrador</div>
+        <div class="sidebar-user-name">Diego Administrador</div>
+    </div>
+
+    <nav>
+        <div class="nav-section-label">Menú Principal</div>
+
+        <ul class="nav-menu">
+
+            <li>
+                <a href="dashboard.html" class="nav-link" data-page="dashboard">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="historial.html" class="nav-link" data-page="historial">
+                    <i class="bi bi-clock-history"></i>
+                    Historial de ingresos
+                </a>
+            </li>
+            <li>
+                <a href="gestion.html" class="nav-link" data-page="usuarios">
+                    <i class="bi bi-people-fill"></i>
+                    Usuarios
+                </a>
+            </li>
+
+            <li>
+                <a href="vehiculos.html" class="nav-link">
+                    <i class="bi bi-car-front-fill"></i>
+                    Vehículos
+                </a>
+            </li>
+
+            <li>
+                <a href="dispositivos.html" class="nav-link">
+                    <i class="bi bi-laptop-fill"></i>
+                    Dispositivos
+                </a>
+            </li>
+
+            <!-- ===== NUEVO: sección desplegable "Registrar" =====
+                 Reemplaza el antiguo enlace único "Nuevo Registro".
+                 Cada opción navega a registrar_general.html con un
+                 parámetro ?tipo=... que esa página lee al cargar para
+                 abrir directamente el formulario correspondiente
+                 (ver js/registro-flujo.js -> leerTipoDesdeURL()).
+                 La opción "Portero" se elimina del DOM en tiempo de
+                 ejecución para usuarios sin permisos de administrador
+                 (ver js/componentes.js -> inicializarMenuRegistrar()). -->
+            <li class="nav-item-dropdown">
+                <button type="button" class="nav-link nav-link-dropdown" id="btnRegistrarDropdown"
+                    aria-expanded="false" aria-controls="registrarSubmenu">
+                    <i class="bi bi-person-plus-fill"></i>
+                    <span>Registrar</span>
+                    <i class="bi bi-chevron-down nav-dropdown-caret"></i>
+                </button>
+
+                <ul class="nav-submenu" id="registrarSubmenu">
+                    <li>
+                        <a href="registrar_general.html?tipo=usuario" class="nav-sublink" data-registro-tipo="usuario">
+                            <i class="bi bi-person-fill"></i> Usuario
+                        </a>
+                    </li>
+                    <li>
+                        <a href="registrar_general.html?tipo=computador" class="nav-sublink" data-registro-tipo="computador">
+                            <i class="bi bi-laptop-fill"></i> Computador
+                        </a>
+                    </li>
+                    <li data-admin-only="true">
+                        <a href="registrar_general.html?tipo=portero" class="nav-sublink" data-registro-tipo="portero">
+                            <i class="bi bi-shield-lock-fill"></i> Portero
+                        </a>
+                    </li>
+                    <li>
+                        <a href="registrar_general.html?tipo=vehiculo" class="nav-sublink" data-registro-tipo="vehiculo">
+                            <i class="bi bi-car-front-fill"></i> Vehículo
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li>
+                <a href="auditoria.html" class="nav-link" data-page="auditoria">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    Auditoría
+                </a>
+            </li>
+
+            <li>
+                <a href="configuracion.html" class="nav-link" data-page="auditoria">
+                    <i class="bi bi-gear-fill"></i>
+                    Configuración
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="index.html" class="logout-link">
+            <i class="bi bi-box-arrow-left"></i>
+            Cerrar Sesión
+        </a>
+    </div>
+
+</aside>

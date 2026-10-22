@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión | Panel Administrativo — SENA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!--
+        ===================================================================
+        NUEVO: estilos para los botones de "Filtrar por fecha" y
+        "Generar reporte" (mismo bloque usado en las demás páginas).
+        Muévelo a tu css/styles.css cuando puedas.
+        ===================================================================
+    -->
+    <style>
+        .toolbar-acciones {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-toolbar-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all .18s ease;
+            white-space: nowrap;
+        }
+
+        .btn-toolbar-outline:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-dark);
+            background: var(--success-bg);
+        }
+
+        .btn-toolbar-outline i {
+            font-size: 1rem;
+            color: var(--primary-color);
+        }
+
+        .btn-toolbar-solid {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: var(--secondary-color);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all .18s ease;
+            white-space: nowrap;
+        }
+
+        .btn-toolbar-solid:hover {
+            background: #5a1f62;
+            color: #fff;
+        }
+
+        .dropdown-panel-wrapper {
+            position: relative;
+        }
+
+        .dropdown-panel {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            z-index: 1050;
+            min-width: 280px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 30px rgba(0, 48, 77, 0.15);
+            padding: 16px;
+            display: none;
+        }
+
+        .dropdown-panel.show {
+            display: block;
+        }
+
+        .dropdown-panel-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .quick-date-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .quick-date-btn {
+            padding: 7px 10px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border-color);
+            background: var(--background-color);
+            color: var(--text-dark);
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all .15s ease;
+        }
+
+        .quick-date-btn:hover,
+        .quick-date-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .date-range-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .date-range-row .form-control {
+            border-radius: 8px;
+            border: 1.5px solid var(--border-color);
+            font-size: 0.82rem;
+            padding: 7px 10px;
+        }
+
+        .dropdown-panel-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .btn-panel-clear {
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        .btn-panel-clear:hover {
+            color: var(--danger-color);
+        }
+
+        .btn-panel-apply {
+            padding: 7px 16px;
+            border-radius: 8px;
+            border: none;
+            background: var(--primary-color);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        .btn-panel-apply:hover {
+            background: var(--primary-dark);
+        }
+
+        .report-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 10px;
+            border-radius: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background .15s ease;
+        }
+
+        .report-option:hover {
+            background: var(--secondary-bg);
+        }
+
+        .report-option i {
+            font-size: 1.1rem;
+            width: 22px;
+            text-align: center;
+        }
+
+        .report-option .icon-pdf {
+            color: var(--danger-color);
+        }
+
+        .report-option .icon-excel {
+            color: var(--primary-color);
+        }
+
+        .report-option .icon-print {
+            color: var(--primary-light);
+        }
+
+        .active-filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--success-bg);
+            color: var(--success-text);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+
+        .active-filter-tag i {
+            cursor: pointer;
+        }
+
+        @media (max-width: 576px) {
+            .dropdown-panel {
+                right: -40px;
+                min-width: 260px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-layout d-flex">
+
+        <!-- Fondo oscuro que aparece detrás del sidebar cuando está abierto en móvil -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <!-- ===================== SIDEBAR DE NAVEGACIÓN ===================== -->
+        <div id="sidebar-container"></div>
+
+        <!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+        <div class="admin-main">
+
+            <!-- Barra superior -->
+            <header class="topbar d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <!-- Botón hamburguesa: solo visible en móvil/tablet -->
+                    <button class="menu-toggle-btn" id="btnToggleSidebar" aria-label="Abrir menú">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="topbar-title" id="topbarTituloGestion">Usuarios</h1>
+                        <p class="topbar-subtitle">Panel Administrativo</p>
+                    </div>
+                </div>
+
+                <!--
+                    Pestañas para cambiar entre las 3 secciones sin salir de
+                    esta página (antes eran usuarios.html, dispositivos.html
+                    y vehiculos.html por separado).
+                -->
+                <div class="gestion-tabs" id="switcherGestion">
+                    <button type="button" class="gestion-tab-btn active" data-vista="usuarios">
+                        <i class="bi bi-people-fill"></i> <span class="gestion-tab-label">Usuarios</span>
+                    </button>
+
+                    <button type="button" class="gestion-tab-btn" data-vista="porteros">
+                        <i class="bi bi-shield-lock-fill"></i> <span class="gestion-tab-label">Porteros</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Contenido de la página -->
+            <main class="admin-content">
+
+                <!-- ===================== VISTA: USUARIOS ===================== -->
+                <div id="vistaUsuarios">
+
+                    <!-- Tarjeta con buscador y tabla -->
+                    <div class="panel-card">
+
+                        <!-- Buscador de usuarios -->
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                            <div class="search-input-wrapper flex-grow-1" style="max-width: 420px;">
+                                <i class="bi bi-search"></i>
+                                <input type="text" class="form-control custom-input" id="inputBuscarUsuario"
+                                    placeholder="Buscar por documento, centro, serial, placa">
+                            </div>
+                            <div class="d-flex flex-wrap align-items-center gap-3">
+                                <span class="results-badge" id="resultadosBadge">2 resultados</span>
+                                <span class="active-filter-tag d-none" id="tagFiltroFechaUsuarios">
+                                    <i class="bi bi-calendar-event"></i>
+                                    <span id="tagFiltroFechaUsuariosTexto">Filtro activo</span>
+                                    <i class="bi bi-x-lg" onclick="limpiarFiltroFechaUsuarios()"></i>
+                                </span>
+
+                                <!-- NUEVO: barra de acciones (filtrar por fecha / generar reporte) -->
+                                <div class="toolbar-acciones">
+                                    <div class="dropdown-panel-wrapper">
+                                        <button type="button" class="btn-toolbar-outline" id="btnFiltrarFechaUsuarios" onclick="togglePanel('panelFiltrarFechaUsuarios', 'panelGenerarReporteUsuarios')">
+                                            <i class="bi bi-calendar3"></i> Filtrar por fecha
+                                        </button>
+                                        <div class="dropdown-panel" id="panelFiltrarFechaUsuarios">
+                                            <div class="dropdown-panel-title">Filtrar usuarios por fecha de registro</div>
+                                            <div class="quick-date-grid" id="quickDatesUsuarios">
+                                                <button type="button" class="quick-date-btn" data-rango="hoy">Hoy</button>
+                                                <button type="button" class="quick-date-btn" data-rango="ayer">Ayer</button>
+                                                <button type="button" class="quick-date-btn" data-rango="semana">Esta semana</button>
+                                                <button type="button" class="quick-date-btn" data-rango="mes">Este mes</button>
+                                            </div>
+                                            <div class="date-range-row">
+                                                <input type="date" class="form-control custom-input" id="fechaDesdeUsuarios" placeholder="Desde">
+                                                <input type="date" class="form-control custom-input" id="fechaHastaUsuarios" placeholder="Hasta">
+                                            </div>
+                                            <div class="dropdown-panel-actions">
+                                                <button type="button" class="btn-panel-clear" onclick="limpiarFiltroFechaUsuarios()">Limpiar</button>
+                                                <button type="button" class="btn-panel-apply" onclick="aplicarFiltroFechaUsuarios()">Aplicar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="dropdown-panel-wrapper">
+                                        <button type="button" class="btn-toolbar-solid" id="btnGenerarReporteUsuarios" onclick="togglePanel('panelGenerarReporteUsuarios', 'panelFiltrarFechaUsuarios')">
+                                            <i class="bi bi-file-earmark-arrow-down"></i> Generar reporte
+                                        </button>
+                                        <div class="dropdown-panel" id="panelGenerarReporteUsuarios">
+                                            <div class="dropdown-panel-title">Exportar usuarios</div>
+                                            <div class="report-option" onclick="generarReporteUsuarios('pdf')">
+                                                <i class="bi bi-file-earmark-pdf icon-pdf"></i> Exportar a PDF
+                                            </div>
+                                            <div class="report-option" onclick="generarReporteUsuarios('excel')">
+                                                <i class="bi bi-file-earmark-excel icon-excel"></i> Exportar a Excel
+                                            </div>
+                                            <div class="report-option" onclick="generarReporteUsuarios('imprimir')">
+                                                <i class="bi bi-printer icon-print"></i> Imprimir
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de usuarios registrados -->
+                        <div class="table-responsive">
+                            <table class="table-custom" id="tablaUsuarios">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Documento</th>
+                                        <th>Estado</th>
+                                        <th>Centro</th>
+                                        <th>Tipo de registro</th>
+                                        <th>Fecha de Registro</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cuerpoTablaUsuarios">
+                                    <!--
+                                        NOTA PARA MÁS ADELANTE: estas filas están escritas
+                                        "a mano" como maqueta visual. Cuando conectes un backend,
+                                        lo normal es generarlas dinámicamente con JavaScript a
+                                        partir de los datos que te devuelva la API, en vez de
+                                        escribirlas aquí.
+
+                                        Encontré la tabla original con un <tr> mal anidado
+                                        dentro de otro (dos filas idénticas de "Carlos Andrés
+                                        Rodríguez" pegadas); lo corregí para que sean dos <tr>
+                                        hermanos válidos, conservando los mismos datos.
+                                    -->
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-sm">CA</div>
+                                                <span class="fw-semibold">Carlos Andrés Rodríguez</span>
+                                            </div>
+                                        </td>
+                                        <td>1098765432</td>
+                                        <td><span class="badge-estado badge-activo">Activo</span></td>
+                                        <td>CTGI</td>
+                                        <td>Permanente</td>
+                                        <td>2024-06-05</td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <button class="table-action-btn" title="Ver" data-bs-toggle="modal"
+                                                    data-bs-target="#modalVerUsuario"><i class="bi bi-eye"></i></button>
+                                                <button class="table-action-btn" title="Editar" data-bs-toggle="modal"
+                                                    data-bs-target="#modalEditarUsuario"><i
+                                                        class="bi bi-pencil"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-sm">SM</div>
+                                                <span class="fw-semibold">Sandra Milena García</span>
+                                            </div>
+                                        </td>
+                                        <td>1045678321</td>
+                                        <td><span class="badge-estado badge-activo">Activo</span></td>
+                                        <td>CTGI</td>
+                                        <td>Temporal</td>
+                                        <td>2023-11-20</td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <button class="table-action-btn" title="Ver" data-bs-toggle="modal"
+                                                    data-bs-target="#modalVerUsuario"><i class="bi bi-eye"></i></button>
+                                                <button class="table-action-btn" title="Editar" data-bs-toggle="modal"
+                                                    data-bs-target="#modalEditarUsuario"><i
+                                                        class="bi bi-pencil"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- ===================== VISTA: PORTEROS ===================== -->
+                <div id="vistaPorteros" style="display: none;">
+
+                    <!-- Encabezado: título + botón para añadir portero -->
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+                        <div>
+                            <h2 class="page-title mb-1">Porteros</h2>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta con buscador y tabla -->
+                    <div class="panel-card">
+
+                        <!-- Buscador de porteros -->
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                            <div class="search-input-wrapper flex-grow-1" style="max-width: 420px;">
+                                <i class="bi bi-search"></i>
+                                <input type="text" class="form-control custom-input" id="inputBuscarPortero"
+                                    placeholder="Filtrar por datos">
+                            </div>
+                            <div class="d-flex flex-wrap align-items-center gap-3">
+                                <span class="results-badge" id="resultadosPorterosBadge">4 resultados</span>
+                                <span class="active-filter-tag d-none" id="tagFiltroFechaPorteros">
+                                    <i class="bi bi-calendar-event"></i>
+                                    <span id="tagFiltroFechaPorterosTexto">Filtro activo</span>
+                                    <i class="bi bi-x-lg" onclick="limpiarFiltroFechaPorteros()"></i>
+                                </span>
+
+                                <!-- NUEVO: barra de acciones (filtrar por fecha / generar reporte) -->
+                                <div class="toolbar-acciones">
+                                    <div class="dropdown-panel-wrapper">
+                                        <button type="button" class="btn-toolbar-outline" id="btnFiltrarFechaPorteros" onclick="togglePanel('panelFiltrarFechaPorteros', 'panelGenerarReportePorteros')">
+                                            <i class="bi bi-calendar3"></i> Filtrar por fecha
+                                        </button>
+                                        <div class="dropdown-panel" id="panelFiltrarFechaPorteros">
+                                            <div class="dropdown-panel-title">Filtrar porteros por fecha de registro</div>
+                                            <div class="quick-date-grid" id="quickDatesPorteros">
+                                                <button type="button" class="quick-date-btn" data-rango="hoy">Hoy</button>
+                                                <button type="button" class="quick-date-btn" data-rango="ayer">Ayer</button>
+                                                <button type="button" class="quick-date-btn" data-rango="semana">Esta semana</button>
+                                                <button type="button" class="quick-date-btn" data-rango="mes">Este mes</button>
+                                            </div>
+                                            <div class="date-range-row">
+                                                <input type="date" class="form-control custom-input" id="fechaDesdePorteros" placeholder="Desde">
+                                                <input type="date" class="form-control custom-input" id="fechaHastaPorteros" placeholder="Hasta">
+                                            </div>
+                                            <div class="dropdown-panel-actions">
+                                                <button type="button" class="btn-panel-clear" onclick="limpiarFiltroFechaPorteros()">Limpiar</button>
+                                                <button type="button" class="btn-panel-apply" onclick="aplicarFiltroFechaPorteros()">Aplicar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="dropdown-panel-wrapper">
+                                        <button type="button" class="btn-toolbar-solid" id="btnGenerarReportePorteros" onclick="togglePanel('panelGenerarReportePorteros', 'panelFiltrarFechaPorteros')">
+                                            <i class="bi bi-file-earmark-arrow-down"></i> Generar reporte
+                                        </button>
+                                        <div class="dropdown-panel" id="panelGenerarReportePorteros">
+                                            <div class="dropdown-panel-title">Exportar porteros</div>
+                                            <div class="report-option" onclick="generarReportePorteros('pdf')">
+                                                <i class="bi bi-file-earmark-pdf icon-pdf"></i> Exportar a PDF
+                                            </div>
+                                            <div class="report-option" onclick="generarReportePorteros('excel')">
+                                                <i class="bi bi-file-earmark-excel icon-excel"></i> Exportar a Excel
+                                            </div>
+                                            <div class="report-option" onclick="generarReportePorteros('imprimir')">
+                                                <i class="bi bi-printer icon-print"></i> Imprimir
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de porteros registrados -->
+                        <div class="table-responsive">
+                            <table class="table-custom" id="tablaPorteros">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Documento</th>
+                                        <th>Correo</th>
+                                        <th>Teléfono</th>
+                                        <th>Turno</th>
+                                        <th>Estado</th>
+                                        <th>Centro</th>
+                                        <th>Fecha de Registro</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cuerpoTablaPorteros">
+                                    <!--
+                                        NOTA PARA MÁS ADELANTE: estas filas están escritas
+                                        "a mano" como maqueta visual. Cuando conectes el
+                                        backend, lo normal es generarlas dinámicamente con
+                                        JavaScript a partir de los datos que te devuelva la
+                                        API, en vez de escribirlas aquí.
+                                    -->
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-sm">JP</div>
+                                                <span class="fw-semibold">Juan Portero García</span>
+                                            </div>
+                                        </td>
+                                        <td>1076543210</td>
+                                        <td><a href="mailto:juan.garcia@sena.edu.co"
+                                                class="text-decoration-none">juan.garcia@sena.edu.co</a></td>
+                                        <td>3009876543</td>
+                                        <td><span class="time-badge">07:00 – 15:00</span></td>
+                                        <td><span class="badge-estado badge-activo">Activo</span></td>
+                                        <td>CTGI</td>
+                                        <td>2024-02-14</td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <button class="table-action-btn" title="Ver" data-bs-toggle="modal"
+                                                    data-bs-target="#modalVerPortero"><i class="bi bi-eye"></i></button>
+                                                <button class="table-action-btn" title="Editar" data-bs-toggle="modal"
+                                                    data-bs-target="#modalEditarPortero"><i
+                                                        class="bi bi-pencil"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ===================== MODALES: USUARIOS ===================== -->
+
+    <!-- MODAL: EDITAR USUARIO -->
+    <div class="modal fade" id="modalEditarUsuario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-custom">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario únicamente visual: los campos no se guardan todavía -->
+                    <div class="mb-3">
+                        <label class="field-label">Nombre completo</label>
+                        <input type="text" class="form-control custom-input" placeholder="Carlos Andrés Rodríguez">
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="field-label">N.° de documento</label>
+                            <input type="text" class="form-control custom-input" placeholder="1098765432">
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="field-label">Contraseña</label>
+                            <input type="text" class="form-control custom-input" placeholder="......">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="field-label">Confirmar contraseña</label>
+                            <input type="text" class="form-control custom-input" placeholder="......">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="field-label">Estado</label>
+                            <select class="form-select custom-input">
+                                <option>Activo</option>
+                                <option>Inactivo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="field-label">Centro</label>
+                            <select class="form-select custom-input">
+                                <option>CTGI</option>
+                                <option>CTMA</option>
+                                <option>CDHC</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="field-label">Tipo de registro</label>
+                            <select class="form-select custom-input">
+                                <option>Permanente</option>
+                                <option>Temporal</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="field-label">Permisos</label>
+                            <select class="form-select custom-input">
+                                <option>Administrador</option>
+                                <option>Usuario</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary-custom" data-bs-dismiss="modal">Guardar
+                        Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: VER USUARIO -->
+    <div class="modal fade" id="modalVerUsuario" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-custom">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <!--
+                        NOTA PARA MÁS ADELANTE: este modal es una maqueta
+                        visual con los datos de un solo usuario de ejemplo.
+                        Cuando conectes el backend, el "Nombre"/"Documento"
+                        de arriba y la lista de dispositivos/vehículos deben
+                        llenarse dinámicamente según la fila en la que se
+                        haya pulsado "Ver".
+                    -->
+
+                    <!-- Información personal -->
+                    <div class="view-info-row">
+                        <span class="view-info-label">Nombre completo</span>
+                        <span class="view-info-value">Carlos Andrés Rodríguez</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">N.° de documento</span>
+                        <span class="view-info-value">1098765432</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Centro</span>
+                        <span class="view-info-value">CTGI</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Estado</span>
+                        <span class="badge-estado badge-activo">Activo</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Tipo de registro</span>
+                        <span class="view-info-value">Permanente</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Fecha de registro</span>
+                        <span class="view-info-value">2024-06-05</span>
+                    </div>
+
+                    <!--
+                        Un usuario puede tener MÚLTIPLES dispositivos y
+                        MÚLTIPLES vehículos registrados. Esta lista sale del
+                        módulo de Dispositivos/Vehículos filtrado por este
+                        propietario; no se duplica información aquí, solo
+                        se referencia.
+                    -->
+                    <div class="pregunta-check-label mt-3 mb-2">Dispositivos registrados (3)</div>
+
+                    <div class="asociado-box">
+                        <div class="asociado-linea">
+                            <span>Equipo</span>
+                            <span>Lenovo ThinkPad E14</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Serial</span>
+                            <span>LNV-2024-0001</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Estado</span>
+                            <span>Activo</span>
+                        </div>
+                    </div>
+                    <div class="asociado-box">
+                        <div class="asociado-linea">
+                            <span>Equipo</span>
+                            <span>Dell Latitude 5420</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Serial</span>
+                            <span>DL5420-88231</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Estado</span>
+                            <span>Activo</span>
+                        </div>
+                    </div>
+                    <div class="asociado-box mb-0">
+                        <div class="asociado-linea">
+                            <span>Equipo</span>
+                            <span>HP 250 G8</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Serial</span>
+                            <span>HP-55231</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Estado</span>
+                            <span>Inactivo</span>
+                        </div>
+                    </div>
+
+                    <div class="pregunta-check-label mt-3 mb-2">Vehículos registrados (2)</div>
+
+                    <div class="asociado-box">
+                        <div class="asociado-linea">
+                            <span>Vehículo</span>
+                            <span>Yamaha FZ</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Placa</span>
+                            <span>ABC-123</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Estado</span>
+                            <span>Activo</span>
+                        </div>
+                    </div>
+                    <div class="asociado-box mb-0">
+                        <div class="asociado-linea">
+                            <span>Vehículo</span>
+                            <span>Chevrolet Spark</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Placa</span>
+                            <span>XYZ-789</span>
+                        </div>
+                        <div class="asociado-linea">
+                            <span>Estado</span>
+                            <span>Activo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="historial.html" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+                        <i class="bi bi-clock-history"></i> Ver movimientos
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== MODALES: PORTEROS ===================== -->
+
+    <!-- MODAL: EDITAR PORTERO -->
+    <div class="modal fade" id="modalEditarPortero" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-custom">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Portero</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Modal genérico de ejemplo; en el backend se llenaría con los datos reales de la fila -->
+                    <div class="mb-3">
+                        <label class="field-label">Nombre completo</label>
+                        <input type="text" class="form-control custom-input" value="Juan Portero García">
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="field-label">N.° de documento</label>
+                            <input type="text" class="form-control custom-input" value="1076543210">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="field-label">Teléfono</label>
+                            <input type="text" class="form-control custom-input" value="3009876543">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="field-label">Correo electrónico</label>
+                        <input type="email" class="form-control custom-input" value="juan.garcia@sena.edu.co">
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="field-label">Turno</label>
+                            <select class="form-select custom-input">
+                                <option selected>07:00 – 15:00</option>
+                                <option>15:00 – 23:00</option>
+                                <option>23:00 – 07:00</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="field-label">Estado</label>
+                            <select class="form-select custom-input">
+                                <option selected>Activo</option>
+                                <option>Inactivo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="field-label">Permisos</label>
+                            <select class="form-select custom-input">
+                                <option selected>Portero</option>
+                                <option>Administrador</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="field-label">Centro</label>
+                            <select class="form-select custom-input">
+                                <option>CTGI</option>
+                                <option>CTMA</option>
+                                <option>CDHC</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary-custom" data-bs-dismiss="modal">Guardar
+                        Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: VER PORTERO -->
+    <div class="modal fade" id="modalVerPortero" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-custom">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de Portero</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="avatar-circle">JP</div>
+                        <div>
+                            <div class="user-name" style="font-size:1rem;">Juan Portero García</div>
+                            <span class="badge-estado badge-activo">Activo</span>
+                        </div>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">N.° de documento</span>
+                        <span class="view-info-value">1076543210</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Correo</span>
+                        <span class="view-info-value">juan.garcia@sena.edu.co</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Teléfono</span>
+                        <span class="view-info-value">3009876543</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Turno</span>
+                        <span class="view-info-value">07:00 – 15:00</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label">Fecha de registro</span>
+                        <span class="view-info-value">2024-02-14</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/componentes.js"></script>
+
+    <!--
+        ===================================================================
+        NUEVO: lógica de los paneles de "Filtrar por fecha" y
+        "Generar reporte" para Usuarios y Porteros. Funciones de ejemplo
+        (front-end puro). Cuando conectes el backend, dentro de
+        aplicarFiltroFechaUsuarios()/Porteros() y
+        generarReporteUsuarios()/Porteros() debes llamar tu API real.
+        ===================================================================
+    -->
+    <script>
+        function togglePanel(idAbrir, idCerrar) {
+            const panelAbrir = document.getElementById(idAbrir);
+            const panelCerrar = document.getElementById(idCerrar);
+            if (panelCerrar) panelCerrar.classList.remove('show');
+            if (panelAbrir) panelAbrir.classList.toggle('show');
+        }
+
+        document.addEventListener('click', function (e) {
+            document.querySelectorAll('.dropdown-panel-wrapper').forEach(function (wrapper) {
+                if (!wrapper.contains(e.target)) {
+                    wrapper.querySelector('.dropdown-panel')?.classList.remove('show');
+                }
+            });
+        });
+
+        // ---------- Usuarios ----------
+        document.querySelectorAll('#quickDatesUsuarios .quick-date-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('#quickDatesUsuarios .quick-date-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        function aplicarFiltroFechaUsuarios() {
+            const desde = document.getElementById('fechaDesdeUsuarios').value;
+            const hasta = document.getElementById('fechaHastaUsuarios').value;
+            const rangoActivo = document.querySelector('#quickDatesUsuarios .quick-date-btn.active');
+
+            // TODO backend: filtrar cuerpoTablaUsuarios por fecha de
+            // registro según el rango, o pedirle a la API los usuarios
+            // ya filtrados.
+            console.log('Filtrar usuarios =>', { rango: rangoActivo?.dataset.rango, desde, hasta });
+
+            const tag = document.getElementById('tagFiltroFechaUsuarios');
+            const tagTexto = document.getElementById('tagFiltroFechaUsuariosTexto');
+            if (rangoActivo) {
+                tagTexto.textContent = rangoActivo.textContent;
+                tag.classList.remove('d-none');
+            } else if (desde || hasta) {
+                tagTexto.textContent = `${desde || '...'} → ${hasta || '...'}`;
+                tag.classList.remove('d-none');
+            }
+
+            togglePanel('', 'panelFiltrarFechaUsuarios');
+        }
+
+        function limpiarFiltroFechaUsuarios() {
+            document.getElementById('fechaDesdeUsuarios').value = '';
+            document.getElementById('fechaHastaUsuarios').value = '';
+            document.querySelectorAll('#quickDatesUsuarios .quick-date-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tagFiltroFechaUsuarios').classList.add('d-none');
+        }
+
+        function generarReporteUsuarios(formato) {
+            // TODO backend: reemplazar por la llamada real que genera el
+            // reporte con los usuarios actualmente filtrados.
+            if (formato === 'imprimir') {
+                window.print();
+            } else {
+                console.log('Generar reporte de usuarios en formato:', formato);
+                alert('Generando reporte en formato ' + formato.toUpperCase() + '... (pendiente de conectar al backend)');
+            }
+            togglePanel('', 'panelGenerarReporteUsuarios');
+        }
+
+        // ---------- Porteros ----------
+        document.querySelectorAll('#quickDatesPorteros .quick-date-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('#quickDatesPorteros .quick-date-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        function aplicarFiltroFechaPorteros() {
+            const desde = document.getElementById('fechaDesdePorteros').value;
+            const hasta = document.getElementById('fechaHastaPorteros').value;
+            const rangoActivo = document.querySelector('#quickDatesPorteros .quick-date-btn.active');
+
+            // TODO backend: filtrar cuerpoTablaPorteros por fecha de
+            // registro según el rango, o pedirle a la API los porteros
+            // ya filtrados.
+            console.log('Filtrar porteros =>', { rango: rangoActivo?.dataset.rango, desde, hasta });
+
+            const tag = document.getElementById('tagFiltroFechaPorteros');
+            const tagTexto = document.getElementById('tagFiltroFechaPorterosTexto');
+            if (rangoActivo) {
+                tagTexto.textContent = rangoActivo.textContent;
+                tag.classList.remove('d-none');
+            } else if (desde || hasta) {
+                tagTexto.textContent = `${desde || '...'} → ${hasta || '...'}`;
+                tag.classList.remove('d-none');
+            }
+
+            togglePanel('', 'panelFiltrarFechaPorteros');
+        }
+
+        function limpiarFiltroFechaPorteros() {
+            document.getElementById('fechaDesdePorteros').value = '';
+            document.getElementById('fechaHastaPorteros').value = '';
+            document.querySelectorAll('#quickDatesPorteros .quick-date-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tagFiltroFechaPorteros').classList.add('d-none');
+        }
+
+        function generarReportePorteros(formato) {
+            // TODO backend: reemplazar por la llamada real que genera el
+            // reporte con los porteros actualmente filtrados.
+            if (formato === 'imprimir') {
+                window.print();
+            } else {
+                console.log('Generar reporte de porteros en formato:', formato);
+                alert('Generando reporte en formato ' + formato.toUpperCase() + '... (pendiente de conectar al backend)');
+            }
+            togglePanel('', 'panelGenerarReportePorteros');
+        }
+    </script>
+
+    <!--
+        Alterna entre las 3 vistas (Usuarios / Dispositivos / Autos) sin
+        recargar la página. Solo muestra/oculta secciones y cambia el
+        título de la barra superior; no carga ni guarda datos de ningún
+        backend.
+    -->
+    <script>
+        (function () {
+            const titulos = {
+                usuarios: "Usuarios",
+                porteros: "Porteros"
+            };
+
+            const botones = document.querySelectorAll("#switcherGestion .gestion-tab-btn");
+            const topbarTitulo = document.getElementById("topbarTituloGestion");
+
+            botones.forEach(function (boton) {
+                boton.addEventListener("click", function () {
+                    const vista = boton.getAttribute("data-vista");
+
+                    botones.forEach(function (b) { b.classList.remove("active"); });
+                    boton.classList.add("active");
+
+                    document.getElementById("vistaUsuarios").style.display = (vista === "usuarios") ? "" : "none";
+                    document.getElementById("vistaPorteros").style.display = (vista === "porteros") ? "" : "none";
+
+                    topbarTitulo.textContent = titulos[vista];
+                });
+            });
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Control de Acceso | SENA</title>
+
+    <!-- Bootstrap 5 CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Estilos propios -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <div class="container-fluid p-0">
+        <div class="row g-0 min-vh-100">
+
+            <!-- ===================== PANEL IZQUIERDO: BRANDING ===================== -->
+            <div class="col-lg-6 panel-branding d-flex flex-column justify-content-between p-5">
+
+                <!-- Círculos decorativos de fondo -->
+                <div class="decor-circle decor-circle-1"></div>
+                <div class="decor-circle decor-circle-2"></div>
+
+                <!-- Logo institucional -->
+                <div class="brand-logo d-flex align-items-center gap-3 position-relative">
+                    <div class="logo-box d-flex align-items-center justify-content-center">S</div>
+                    <div>
+                        <div class="logo-text-main">SENA</div>
+                        <div class="logo-text-sub">COLOMBIA</div>
+                    </div>
+                </div>
+
+                <!-- Texto principal y lista de características -->
+                <div class="position-relative">
+                    <h1 class="branding-title">
+                        Sistema de Control<br>
+                        <span>de Acceso</span>
+                    </h1>
+                    <p class="branding-description">
+                        Plataforma institucional para el registro y control de ingreso de
+                        personas, equipos y vehículos dentro de las instalaciones.
+                    </p>
+
+                    <!-- Lista de características del sistema -->
+                    <ul class="feature-list list-unstyled">
+                        <li>
+                            <span class="feature-icon">📋</span>
+                            Registro de ingresos y salidas en tiempo real
+                        </li>
+                        <li>
+                            <span class="feature-icon">💻</span>
+                            Control de dispositivos y computadores
+                        </li>
+                        <li>
+                            <span class="feature-icon">🚗</span>
+                            Monitoreo y trazabilidad de vehículos
+                        </li>
+                        <li>
+                            <span class="feature-icon">🔒</span>
+                            Auditoría completa de acciones del sistema
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Pie de página -->
+                <div class="branding-footer position-relative">
+                    © 2026 SENA — Servicio Nacional de Aprendizaje
+                </div>
+            </div>
+
+            <!-- ===================== PANEL DERECHO: FORMULARIOS ===================== -->
+            <div class="col-lg-6 panel-form d-flex align-items-center justify-content-center p-4 p-md-5">
+                <div class="form-wrapper w-100">
+
+                    <!-- Selector de pestañas: Iniciar Sesión / Registrarse -->
+                    <div class="tab-switcher d-flex mb-4" role="tablist">
+                        <button type="button" class="tab-btn active" id="btnTabLogin" data-tab="login">
+                            Iniciar Sesión
+                        </button>
+                        <button type="button" class="tab-btn" id="btnTabRegister" data-tab="register">
+                            Registrarse
+                        </button>
+                    </div>
+
+                    <!-- ============ FORMULARIO: INICIAR SESIÓN ============ -->
+                    <section id="panelLogin" class="tab-panel">
+                        <h2 class="form-title">Bienvenido</h2>
+                        <p class="form-subtitle">Ingresa tus credenciales</p>
+
+                        <form id="formLogin" novalidate>
+
+                            <!-- Campo nombre -->
+                            <div class="mb-3">
+                                <label for="loginNombre" class="field-label">Documento</label>
+                                <input type="number" class="form-control custom-input" id="loginNombre"
+                                    placeholder="Número de documento">
+                            </div>
+
+                            <!-- Campo contraseña -->
+                            <div class="mb-4">
+                                <label for="loginPassword" class="field-label">Contraseña</label>
+                                <input type="password" class="form-control custom-input" id="loginPassword"
+                                    placeholder="••••••••">
+                            </div>
+
+                            <!--
+                                NOTA PARA MÁS ADELANTE:
+                                Este botón todavía no valida ni autentica nada; solo evita que
+                                la página se recargue (ver js/app.js). Aquí conectarás la
+                                lógica real de inicio de sesión.
+                            -->
+                            <button type="submit" class="btn btn-primary-custom w-100">Iniciar Sesión</button>
+                        </form>
+                    </section>
+
+                    <!-- ============ FORMULARIO: REGISTRARSE ============ -->
+                    <section id="panelRegister" class="tab-panel d-none">
+                        <h2 class="form-title">Crear cuenta</h2>
+                        <p class="form-subtitle">Completa el formulario para registrarte en el sistema</p>
+
+                        <form id="formRegister" novalidate>
+
+                            <div class="mb-3">
+                                <label for="regNombre" class="field-label">Nombre completo</label>
+                                <input type="text" class="form-control custom-input" id="regNombre"
+                                    placeholder="Juan Pérez Gómez">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="regDocumento" class="field-label">N.° de documento</label>
+                                <input type="text" class="form-control custom-input" id="regDocumento"
+                                    placeholder="1098765432">
+                            </div>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label for="regPassword" class="field-label">Contraseña</label>
+                                    <input type="password" class="form-control custom-input" id="regPassword"
+                                        placeholder="Mínimo 6 caracteres">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="regPasswordConfirm" class="field-label">Confirmar contraseña</label>
+                                    <input type="password" class="form-control custom-input" id="regPasswordConfirm"
+                                        placeholder="Repite la contraseña">
+                                </div>
+                            </div>
+
+                            <!--
+                                NOTA PARA MÁS ADELANTE:
+                                Igual que en el login, este botón solo evita el recargue de
+                                la página. Aquí conectarás la lógica real de registro.
+                            -->
+                            <button type="submit" class="btn btn-primary-custom w-100">Crear Cuenta</button>
+                        </form>
+                    </section>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript propio -->
+    <script src="js/app.js"></script>
+</body>
+
+</html>

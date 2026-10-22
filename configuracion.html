@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración | Panel Administrativo — SENA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="admin-layout d-flex">
+
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <!-- ===================== SIDEBAR DE NAVEGACIÓN ===================== -->
+        <div id="sidebar-container"></div>
+
+        <!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+        <div class="admin-main">
+
+            <header class="topbar d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <button class="menu-toggle-btn" id="btnToggleSidebar" aria-label="Abrir menú">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="topbar-title">Configuración</h1>
+                        <p class="topbar-subtitle">Panel Administrativo</p>
+                    </div>
+                </div>
+            </header>
+
+            <main class="admin-content settings-page">
+
+                <div class="settings-hero">
+                    <div class="settings-hero-content">
+                        <div class="settings-eyebrow">
+                            <span class="settings-eyebrow-icon"><i class="bi bi-sliders2"></i></span>
+                            Administración
+                        </div>
+                        <h2 class="page-title">Configuración del sistema</h2>
+                        <p class="page-subtitle">Define qué funciones puede utilizar cada tipo de usuario dentro de la plataforma.</p>
+                    </div>
+                    <button type="button" class="btn btn-primary-custom settings-save-btn d-inline-flex align-items-center gap-2">
+                        <i class="bi bi-check2"></i>
+                        Guardar cambios
+                    </button>
+                </div>
+
+                <div class="settings-summary">
+                    <div class="settings-summary-item">
+                        <span class="settings-summary-icon"><i class="bi bi-shield-check"></i></span>
+                        <div>
+                            <strong>Permisos por rol</strong>
+                            <span>Administra accesos de forma independiente.</span>
+                        </div>
+                    </div>
+                    <div class="settings-summary-item">
+                        <span class="settings-summary-icon"><i class="bi bi-toggle-on"></i></span>
+                        <div>
+                            <strong>Control rápido</strong>
+                            <span>Activa o desactiva cada función desde su interruptor.</span>
+                        </div>
+                    </div>
+                    <div class="settings-summary-item settings-summary-note">
+                        <span class="settings-summary-icon"><i class="bi bi-info-circle"></i></span>
+                        <div>
+                            <strong>Importante</strong>
+                            <span>Los cambios se aplicarán al guardar.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-sections">
+
+                    <!-- ===================================================== -->
+                    <!-- ADMINISTRADORES SECUNDARIOS                          -->
+                    <!-- ===================================================== -->
+                    <section class="settings-card">
+                        <div class="settings-card-header">
+                            <div class="settings-card-heading">
+                                <span class="settings-role-icon settings-role-admin"><i class="bi bi-person-badge-fill"></i></span>
+                                <div>
+                                    <div class="settings-role-label">Rol</div>
+                                    <h3>Administradores secundarios</h3>
+                                    <p>Controla qué puede hacer un administrador que no es el principal.</p>
+                                </div>
+                            </div>
+                            <span class="settings-count"><strong>14</strong> permisos</span>
+                        </div>
+
+                        <div class="permission-list">
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Agregar usuarios</span>
+                                    <span class="permission-desc">Permite registrar nuevos usuarios en el sistema.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.agregar_usuarios" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Editar usuarios</span>
+                                    <span class="permission-desc">Permite modificar la información de usuarios existentes.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.editar_usuarios" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Activar/Desactivar usuarios</span>
+                                    <span class="permission-desc">Permite cambiar el estado de una cuenta de usuario.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.estado_usuarios"></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Gestionar porteros</span>
+                                    <span class="permission-desc">Permite registrar, editar y activar o desactivar cuentas de porteros.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.gestionar_porteros" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Gestionar dispositivos y computadores</span>
+                                    <span class="permission-desc">Permite registrar, consultar, editar y cambiar el estado de dispositivos.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.gestionar_dispositivos" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Gestionar vehículos</span>
+                                    <span class="permission-desc">Permite registrar, consultar, editar y cambiar el estado de vehículos.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.gestionar_vehiculos" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Registrar usuarios temporales</span>
+                                    <span class="permission-desc">Permite registrar personas temporales para facilitar su acceso institucional.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.registrar_temporales"></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Consultar historial de movimientos</span>
+                                    <span class="permission-desc">Permite consultar ingresos y salidas registrados en Smart Access.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.consultar_movimientos" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Ver dashboard e indicadores</span>
+                                    <span class="permission-desc">Permite consultar indicadores, actividad y registros recientes del sistema.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.ver_dashboard" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Ver sección de Auditoría</span>
+                                    <span class="permission-desc">Permite consultar el historial de acciones realizadas dentro del sistema.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.ver_auditoria"></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Ver reportes</span>
+                                    <span class="permission-desc">Permite consultar información consolidada de usuarios, accesos y movimientos.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.ver_reportes"></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Exportar información</span>
+                                    <span class="permission-desc">Permite descargar información y reportes en los formatos disponibles.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.exportar_informacion"></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Gestionar códigos QR</span>
+                                    <span class="permission-desc">Permite administrar la generación, consulta o asignación de códigos QR según las funciones disponibles.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.gestionar_qr"></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Acceder a Configuración del sistema</span>
+                                    <span class="permission-desc">Permite acceder y modificar la configuración de permisos cuando esta función sea autorizada.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="admin.acceder_configuracion"></span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- ===================================================== -->
+                    <!-- PORTEROS                                               -->
+                    <!-- ===================================================== -->
+                    <section class="settings-card">
+                        <div class="settings-card-header">
+                            <div class="settings-card-heading">
+                                <span class="settings-role-icon settings-role-guard"><i class="bi bi-shield-lock-fill"></i></span>
+                                <div>
+                                    <div class="settings-role-label">Rol</div>
+                                    <h3>Porteros</h3>
+                                    <p>Controla qué puede hacer un portero desde su portal.</p>
+                                </div>
+                            </div>
+                            <span class="settings-count"><strong>10</strong> permisos</span>
+                        </div>
+
+                        <div class="permission-list">
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Escanear código QR</span>
+                                    <span class="permission-desc">Usar el escáner para identificar usuarios y validar ingresos y salidas.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="portero.escanear_qr" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Registrar ingreso/salida manual</span>
+                                    <span class="permission-desc">Registrar un movimiento sin utilizar el código QR.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="portero.movimiento_manual" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Registrar usuarios</span>
+                                    <span class="permission-desc">Permite registrar nuevos usuarios desde el módulo de portería.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="portero.registrar_usuarios" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Registrar usuarios temporales</span>
+                                    <span class="permission-desc">Permite registrar personas temporales para su ingreso a la institución.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="portero.registrar_temporales"></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Registrar dispositivos</span>
+                                    <span class="permission-desc">Permite registrar un computador asociado a un usuario desde portería.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="portero.registrar_dispositivos" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Registrar vehículos</span>
+                                    <span class="permission-desc">Permite registrar vehículos asociados a usuarios desde portería.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="portero.registrar_vehiculos" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Consultar usuarios</span>
+                                    <span class="permission-desc">Permite consultar la información necesaria para validar a una persona.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="portero.consultar_usuarios" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Consultar dispositivos y vehículos</span>
+                                    <span class="permission-desc">Permite verificar los elementos asociados a un usuario durante el control de acceso.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="portero.consultar_elementos" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Ver historial de accesos del día</span>
+                                    <span class="permission-desc">Consultar los movimientos registrados durante su jornada.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="portero.historial_dia" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Registrar salida de elementos pendientes</span>
+                                    <span class="permission-desc">Permite registrar posteriormente la salida de un computador o vehículo que permaneció en la institución.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="portero.salida_elementos_pendientes"></span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- ===================================================== -->
+                    <!-- USUARIOS                                               -->
+                    <!-- ===================================================== -->
+                    <section class="settings-card">
+                        <div class="settings-card-header">
+                            <div class="settings-card-heading">
+                                <span class="settings-role-icon settings-role-user"><i class="bi bi-person-fill"></i></span>
+                                <div>
+                                    <div class="settings-role-label">Rol</div>
+                                    <h3>Usuarios</h3>
+                                    <p>Controla qué puede hacer un usuario final desde su vista personal.</p>
+                                </div>
+                            </div>
+                            <span class="settings-count"><strong>9</strong> permisos</span>
+                        </div>
+
+                        <div class="permission-list">
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Ver mi perfil</span>
+                                    <span class="permission-desc">Consultar sus propios datos personales.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="usuario.ver_perfil" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Ver mi dispositivo</span>
+                                    <span class="permission-desc">Consultar los computadores registrados a su nombre y su estado.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="usuario.ver_dispositivo" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Registrar mi propio dispositivo</span>
+                                    <span class="permission-desc">Añadir un computador nuevo sin pasar por un administrador.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="usuario.registrar_dispositivo"></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Ver estado de mis dispositivos</span>
+                                    <span class="permission-desc">Consultar si sus dispositivos registrados aparecen dentro o fuera de la institución.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="usuario.estado_dispositivos"></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Ver mi vehículo</span>
+                                    <span class="permission-desc">Consultar los vehículos registrados a su nombre y su información disponible.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="usuario.ver_vehiculo" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Registrar mi propio vehículo</span>
+                                    <span class="permission-desc">Añadir un vehículo nuevo sin pasar por un administrador.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="usuario.registrar_vehiculo"></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Ver estado de mis vehículos</span>
+                                    <span class="permission-desc">Consultar si sus vehículos registrados aparecen dentro o fuera de la institución.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="usuario.estado_vehiculos"></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Ver mi historial de accesos</span>
+                                    <span class="permission-desc">Consultar sus propios ingresos y salidas.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="usuario.historial_accesos" checked></span>
+                            </label>
+
+                            <label class="permission-item">
+                                <span class="permission-copy">
+                                    <span class="permission-title">Ver detalle de mis movimientos</span>
+                                    <span class="permission-desc">Consultar el detalle de cada ingreso o salida y los elementos asociados al movimiento.</span>
+                                </span>
+                                <span class="permission-control"><input class="form-check-input" type="checkbox" data-permission="usuario.detalle_movimientos" checked></span>
+                            </label>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="settings-footer-tip">
+                    <i class="bi bi-lightbulb"></i>
+                    <div><strong>Consejo:</strong> revisa los permisos después de cada cambio para asegurar que cada rol tenga únicamente el acceso necesario.</div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/componentes.js"></script>
+</body>
+</html>

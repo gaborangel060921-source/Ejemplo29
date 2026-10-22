@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Dispositivo | Portal de Usuario — SENA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="admin-layout d-flex">
+
+        <!-- Fondo oscuro que aparece detrás del sidebar cuando está abierto en móvil -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <!-- ===================== SIDEBAR DE NAVEGACIÓN — USUARIO ===================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <!-- Logo institucional -->
+            <div class="sidebar-header">
+                <div class="logo-box d-flex align-items-center justify-content-center">S</div>
+                <div>
+                    <div class="sidebar-brand-name">SENA</div>
+                    <div class="sidebar-brand-sub">CONTROL ACCESO</div>
+                </div>
+            </div>
+
+            <!-- Datos del usuario conectado -->
+            <div class="sidebar-user-box sidebar-user-box-usuario">
+                <div class="sidebar-user-role sidebar-user-role-usuario">Usuario</div>
+                <div class="sidebar-user-name">María Fernanda López</div>
+            </div>
+
+            <!-- Menú principal de navegación -->
+            <nav class="nav-menu-usuario">
+                <div class="nav-section-label">Mi Cuenta</div>
+                <ul class="nav-menu">
+                    <li><a href="mi-perfil.html" class="nav-link"><i class="bi bi-person-fill"></i> Mi Perfil</a></li>
+                    <li><a href="mis-accesos.html" class="nav-link"><i class="bi bi-clock-history"></i> Mis Accesos</a></li>
+                    <li><a href="mi-dispositivo.html" class="nav-link active"><i class="bi bi-laptop-fill"></i> Mi Dispositivo</a></li>
+                    <li><a href="mi-vehiculo.html" class="nav-link"><i class="bi bi-car-front-fill"></i> Mi Vehículo</a></li>
+                </ul>
+            </nav>
+
+            <!-- Cerrar sesión: vuelve a la pantalla de login -->
+            <div class="sidebar-footer">
+                <a href="index.html" class="logout-link">
+                    <i class="bi bi-box-arrow-left"></i> Cerrar Sesión
+                </a>
+            </div>
+        </aside>
+
+        <!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+        <div class="admin-main">
+
+            <!-- Barra superior -->
+            <header class="topbar d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <!-- Botón hamburguesa: solo visible en móvil/tablet -->
+                    <button class="menu-toggle-btn" id="btnToggleSidebar" aria-label="Abrir menú">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="topbar-title">Mi Dispositivo</h1>
+                        <p class="topbar-subtitle">Portal de Usuario</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Contenido de la página -->
+            <main class="admin-content">
+
+                <!--
+                    Agregué el botón "+ Agregar Dispositivo" para que puedas
+                    registrar un segundo equipo desde aquí, ya que antes solo
+                    se mostraba el dispositivo ya registrado sin forma de
+                    añadir otro.
+                -->
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+                    <div>
+                        <h2 class="page-title mb-1">Mi Dispositivo</h2>
+                        <p class="page-subtitle mb-0">Información del computador registrado a tu cuenta</p>
+                    </div>
+                    <button type="button" class="btn btn-primary-custom d-inline-flex align-items-center gap-2" id="btnAgregarDispositivo" data-bs-toggle="modal" data-bs-target="#modalAgregarMiDispositivo">
+                        <i class="bi bi-plus-lg"></i> Agregar Dispositivo
+                    </button>
+                </div>
+
+                <div class="row g-3">
+
+                    <!-- Tarjeta del dispositivo -->
+                    <div class="col-12 col-md-5 col-lg-4">
+                        <div class="device-card">
+                            <div class="device-card-image">
+                                <i class="bi bi-laptop"></i>
+                            </div>
+                            <div class="device-underline device-underline-autorizado"></div>
+                            <div class="device-card-body">
+                                <div class="device-name">HP Pavilion 15</div>
+                                <p class="text-muted mb-0" style="font-size: 0.82rem;">HPV-2024-0032</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detalles del equipo -->
+                    <div class="col-12 col-md-7 col-lg-6">
+                        <div class="panel-card">
+                            <span class="panel-card-title d-block mb-2">Detalles del Equipo</span>
+
+                            <div class="row" style="margin-left: 8px;">
+                                <div class="col-6 equipo-detail-row">
+                                    <div class="equipo-detail-label">Marca</div>
+                                    <div class="equipo-detail-value">HP</div>
+                                </div>
+                            </div>
+
+                            <div class="equipo-detail-row">
+                                <div class="equipo-detail-label">Serial</div>
+                                <div class="equipo-detail-value">HPV-2024-0032</div>
+                            </div>
+
+                            <div class="row" style="margin-left: 12px;">
+                                <div class="col-6 equipo-detail-row">
+                                    <div class="equipo-detail-label">Fecha de Registro</div>
+                                    <div class="equipo-detail-value">2024-01-22</div>
+                                </div>
+                                <div class="col-6 equipo-detail-row">
+                                    <div class="equipo-detail-label">Estado</div>
+                                    <div class="equipo-detail-value">Activo</div>
+                                </div>
+                            </div>
+
+                            <div class="equipo-detail-row">
+                                <div class="equipo-detail-label">Observaciones</div>
+                                <div class="equipo-detail-value">Cargador tipo C, funda negra</div>
+                            </div>
+
+                            <div class="info-alert-box">
+                                <div class="info-alert-title"><i class="bi bi-info-circle-fill"></i> Información</div>
+                                <p class="info-alert-text">Para modificar los datos de tu dispositivo, contacta al administrador del sistema.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+    <!-- ===================== MODAL: AGREGAR MI DISPOSITIVO ===================== -->
+    <div class="modal fade" id="modalAgregarMiDispositivo" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-custom">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Dispositivo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Igual que en el panel de administrador: la foto se subiría desde el backend -->
+                    <div class="view-image-placeholder">
+                        <i class="bi bi-camera"></i>
+                        <span>Aquí se subirá la foto del equipo (se conecta desde el backend)</span>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="field-label">Marca</label>
+                            <input type="text" class="form-control custom-input" placeholder="HP">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="field-label">Serial</label>
+                        <input type="text" class="form-control custom-input" placeholder="HPV-2024-0032">
+                    </div>
+                    <div class="mb-1">
+                        <label class="field-label">Observaciones</label>
+                        <textarea class="form-control custom-input" rows="2" placeholder="Cargador, funda, marcas visibles..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary-custom" data-bs-dismiss="modal">Guardar Dispositivo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

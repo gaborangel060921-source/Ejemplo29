@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escanear QR | Panel de Portería — SENA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <div class="admin-layout d-flex">
+
+        <!-- Fondo oscuro que aparece detrás del sidebar cuando está abierto en móvil -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <!-- ===================== SIDEBAR DE NAVEGACIÓN — PORTERÍA ===================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <!-- Logo institucional -->
+            <div class="sidebar-header">
+                <div class="logo-box d-flex align-items-center justify-content-center">S</div>
+                <div>
+                    <div class="sidebar-brand-name">SENA</div>
+                    <div class="sidebar-brand-sub">CONTROL ACCESO</div>
+                </div>
+            </div>
+
+            <!-- Datos del portero conectado -->
+            <div class="sidebar-user-box sidebar-user-box-portero">
+                <div class="sidebar-user-role sidebar-user-role-portero">Portero</div>
+                <div class="sidebar-user-name">Juan Portero García</div>
+            </div>
+
+            <!-- Turno actual -->
+            <div class="turno-box">
+                <div class="turno-box-label">Turno Actual</div>
+                <div class="turno-box-time"><span class="turno-dot"></span> 07:00 – 15:00</div>
+            </div>
+
+            <!-- Menú principal de navegación -->
+            <nav class="nav-menu-portero">
+                <div class="nav-section-label">Panel de Portería</div>
+                <ul class="nav-menu">
+                    <li><a href="escanear-qr.html" class="nav-link active"><i class="bi bi-grid-1x2-fill"></i> Escanear
+                            QR</a></li>
+                    <li><a href="registrar-usuario.html" class="nav-link"><i class="bi bi-person-plus-fill"></i>
+                            Registrar Usuario</a></li>
+                </ul>
+            </nav>
+
+            <!-- Cerrar sesión: vuelve a la pantalla de login -->
+            <div class="sidebar-footer">
+                <a href="index.html" class="logout-link">
+                    <i class="bi bi-box-arrow-left"></i> Cerrar Sesión
+                </a>
+            </div>
+        </aside>
+
+        <!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+        <div class="admin-main">
+
+            <!-- Barra superior -->
+            <header class="topbar d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <!-- Botón hamburguesa: solo visible en móvil/tablet -->
+                    <button class="menu-toggle-btn" id="btnToggleSidebar" aria-label="Abrir menú">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="topbar-title">Escanear QR</h1>
+                        <p class="topbar-subtitle">Panel de Portería</p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <span class="turno-activo-badge"><i class="bi bi-circle-fill" style="font-size:0.5rem;"></i> Turno
+                        activo</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="avatar-circle avatar-circle-portero">JP</div>
+                        <div class="d-none d-sm-block">
+                            <div class="user-name">Juan</div>
+                            <div class="user-role">Portero</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Contenido de la página -->
+            <main class="admin-content">
+
+                <div class="mb-4">
+                    <h2 class="page-title mb-1">Escanear Código QR</h2>
+                    <p class="page-subtitle mb-0">Escanea el QR del usuario para registrar ingreso o salida</p>
+                </div>
+
+                <div class="row g-4">
+
+                    <!-- Columna izquierda: escáner + búsqueda manual + generador de QR de prueba -->
+                    <div class="col-12 col-lg-6">
+
+                        <!-- Caja del "lector" de cámara (solo visual, sin acceso real a cámara) -->
+                        <div class="qr-scanner-box mb-3">
+                            <i class="bi bi-qr-code-scan"></i>
+                            <div class="qr-scanner-hint">Apunta la cámara al código QR del usuario</div>
+                            <div class="qr-scanner-status">Cámara activa</div>
+                        </div>
+
+                        <!-- Búsqueda manual por código -->
+                        <div class="panel-card mb-3">
+                            <label for="inputCodigoQR" class="field-label">Código Manual</label>
+                            <div class="d-flex gap-2">
+                                <input type="text" class="form-control custom-input" id="inputCodigoQR"
+                                    placeholder="Código">
+                                <button type="button" class="btn btn-primary-custom px-4"
+                                    id="btnBuscarQR">Ingresar</button>
+                            </div>
+                            <div class="aviso-inline" id="avisoNoEncontrado">No se encontró ningún usuario con ese
+                                código.</div>
+                        </div>
+
+                        <!-- Generador de QR de prueba: permite crear un QR real para
+                             probar el flujo completo de escaneo -->
+                        <div class="panel-card mb-3">
+                            <label for="selectUsuarioPrueba" class="field-label">Generar QR de Prueba</label>
+                            <div class="d-flex gap-2 mb-3">
+                                <select class="form-select custom-input" id="selectUsuarioPrueba">
+                                    <option value="">Selecciona un usuario de prueba...</option>
+                                </select>
+                                <button type="button" class="btn btn-outline-custom" id="btnGenerarQR">Generar</button>
+                            </div>
+
+                            <div id="qrGeneradoWrapper" class="text-center d-none">
+                                <div id="qrGeneradoCanvas" class="d-inline-block p-3 bg-white border rounded mb-2">
+                                </div>
+                                <div class="mb-3">
+                                    <span class="qr-code-chip" id="qrGeneradoCodigo"></span>
+                                </div>
+                                <button type="button" class="btn btn-primary-custom w-100" id="btnSimularEscaneo">
+                                    <i class="bi bi-qr-code-scan"></i> Simular Escaneo de este QR
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Códigos de prueba rápidos -->
+                        <div class="demo-box">
+                            <div class="demo-title">Usuarios de Prueba Disponibles</div>
+                            <div id="listaUsuariosPrueba"></div>
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha: información del usuario escaneado -->
+                    <div class="col-12 col-lg-6">
+                        <div id="resultadoUsuario">
+                            <div class="qr-side-panel" id="estadoVacio">
+                                <i class="bi bi-person-fill"></i>
+                                <p>Escanea o ingresa un código QR para ver la información del usuario</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Plantilla oculta con la tarjeta de resultado (la usa escanear-qr.js) -->
+    <template id="plantillaResultado">
+        <div class="resultado-usuario-card">
+            <div class="resultado-header">
+                <div class="resultado-avatar" data-campo="avatar"></div>
+                <div>
+                    <div class="resultado-nombre" data-campo="nombre"></div>
+                    <div class="resultado-meta" data-campo="meta"></div>
+                </div>
+                <span class="badge-estado badge-activo ms-auto" data-campo="badgeRol"></span>
+            </div>
+
+            <!-- NUEVO: solo se muestra en el flujo de SALIDA (usuario con
+                 un ingreso activo). Indica la hora en la que entró. -->
+            <div class="ingreso-activo-box d-none" data-campo="bloqueIngresoActivo">
+                <div class="ingreso-activo-label">Ingreso actual</div>
+                <div class="ingreso-activo-hora" data-campo="horaIngresoActivo"></div>
+            </div>
+
+            <!-- NUEVO: aquí escanear-qr.js inyecta dinámicamente las
+                 secciones de "Computadores registrados" y "Vehículos
+                 registrados" (o el mensaje de "no tiene ...registrados")
+                 según el usuario y el modo (ingreso/salida). El número de
+                 tarjetas es variable: 0, 1 o varias por usuario. -->
+            <div data-campo="listaElementos"></div>
+
+            <!-- NUEVO: resumen de lo seleccionado, antes de confirmar -->
+            <div class="resumen-elementos-box d-none" data-campo="resumenBox">
+                <div class="resumen-elementos-titulo" data-campo="resumenTitulo"></div>
+                <div data-campo="resumenContenido"></div>
+            </div>
+
+            <div class="aviso-inline" data-campo="avisoSeleccion"></div>
+
+            <button type="button" class="btn btn-registrar-custom w-100 mt-2" data-accion="confirmar">
+                <i class="bi bi-check-circle-fill"></i>
+                <span data-campo="btnConfirmarTexto">Confirmar Ingreso</span>
+            </button>
+
+            <div class="alert-mensaje exito mt-3 d-none" data-campo="mensajeExito"></div>
+
+            <button type="button" class="btn btn-outline-custom w-100 mt-2 d-none" data-accion="nuevoEscaneo">
+                <i class="bi bi-arrow-repeat"></i> Escanear Otro Usuario
+            </button>
+        </div>
+    </template>
+
+    <!-- NUEVO: modal compartido para "Ver imagen" de un computador o
+         vehículo registrado (seguridad: el portero puede comparar el
+         elemento físico con la foto que quedó registrada). Un solo modal
+         en el DOM, escanear-qr.js lo rellena según la tarjeta en la que
+         se haga clic. -->
+    <div class="modal fade" id="modalVerImagenElemento" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-custom">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalVerImagenTitulo">Imagen del elemento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="view-image-placeholder" id="modalVerImagenContenedor">
+                        <i class="bi" id="modalVerImagenIcono"></i>
+                        <span>Imagen del elemento (vendrá del backend)</span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label" id="modalVerImagenLabel1"></span>
+                        <span class="view-info-value" id="modalVerImagenValor1"></span>
+                    </div>
+                    <div class="view-info-row">
+                        <span class="view-info-label" id="modalVerImagenLabel2"></span>
+                        <span class="view-info-value" id="modalVerImagenValor2"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/escanear-qr.js"></script>
+</body>
+
+</html>

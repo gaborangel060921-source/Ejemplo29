@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoría | Panel Administrativo — SENA</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!--
+        ===================================================================
+        NUEVO: estilos para los botones de "Filtrar por fecha" y
+        "Generar reporte". Cuando puedas, mueve todo este bloque <style>
+        a tu archivo css/styles.css y borra el bloque de aquí.
+        ===================================================================
+    -->
+    <style>
+        /* Barra de acciones (filtros / reportes) */
+        .toolbar-acciones {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-toolbar-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all .18s ease;
+            white-space: nowrap;
+        }
+
+        .btn-toolbar-outline:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-dark);
+            background: var(--success-bg);
+        }
+
+        .btn-toolbar-outline i {
+            font-size: 1rem;
+            color: var(--primary-color);
+        }
+
+        .btn-toolbar-solid {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: var(--secondary-color);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all .18s ease;
+            white-space: nowrap;
+        }
+
+        .btn-toolbar-solid:hover {
+            background: #5a1f62;
+            color: #fff;
+        }
+
+        /* Panel desplegable genérico (fecha / reportes) */
+        .dropdown-panel-wrapper {
+            position: relative;
+        }
+
+        .dropdown-panel {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            z-index: 1050; /* por encima del sidebar (que suele usar ~900-1000) */
+            min-width: 280px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 30px rgba(0, 48, 77, 0.15);
+            padding: 16px;
+            display: none;
+        }
+
+        .dropdown-panel.show {
+            display: block;
+        }
+
+        .dropdown-panel-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .quick-date-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .quick-date-btn {
+            padding: 7px 10px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border-color);
+            background: var(--background-color);
+            color: var(--text-dark);
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all .15s ease;
+        }
+
+        .quick-date-btn:hover,
+        .quick-date-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .date-range-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .date-range-row .form-control {
+            border-radius: 8px;
+            border: 1.5px solid var(--border-color);
+            font-size: 0.82rem;
+            padding: 7px 10px;
+        }
+
+        .dropdown-panel-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .btn-panel-clear {
+            padding: 7px 14px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        .btn-panel-clear:hover {
+            color: var(--danger-color);
+        }
+
+        .btn-panel-apply {
+            padding: 7px 16px;
+            border-radius: 8px;
+            border: none;
+            background: var(--primary-color);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        .btn-panel-apply:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Opciones dentro del panel de reportes */
+        .report-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 10px;
+            border-radius: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background .15s ease;
+        }
+
+        .report-option:hover {
+            background: var(--secondary-bg);
+        }
+
+        .report-option i {
+            font-size: 1.1rem;
+            width: 22px;
+            text-align: center;
+        }
+
+        .report-option .icon-pdf {
+            color: var(--danger-color);
+        }
+
+        .report-option .icon-excel {
+            color: var(--primary-color);
+        }
+
+        .report-option .icon-print {
+            color: var(--primary-light);
+        }
+
+        .active-filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--success-bg);
+            color: var(--success-text);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+
+        .active-filter-tag i {
+            cursor: pointer;
+        }
+
+        @media (max-width: 576px) {
+            .dropdown-panel {
+                right: -40px;
+                min-width: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-layout d-flex">
+
+        <!-- Fondo oscuro que aparece detrás del sidebar cuando está abierto en móvil -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <!-- ===================== SIDEBAR DE NAVEGACIÓN ===================== -->
+        <div id="sidebar-container"></div>
+
+        <!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+        <div class="admin-main">
+
+            <!-- Barra superior -->
+            <header class="topbar d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <!-- Botón hamburguesa: solo visible en móvil/tablet -->
+                    <button class="menu-toggle-btn" id="btnToggleSidebar" aria-label="Abrir menú">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="topbar-title">Auditoría</h1>
+                        <p class="topbar-subtitle">Panel Administrativo</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Contenido de la página -->
+            <main class="admin-content">
+
+                <!-- Encabezado -->
+                <div class="mb-4">
+                    <h2 class="page-title mb-1">Auditoría</h2>
+                    <p class="page-subtitle mb-0">Registro completo de acciones realizadas en el sistema</p>
+                </div>
+
+                <!-- Tarjeta con contador + tabla de auditoría -->
+                <div class="panel-card">
+
+                    <div class="audit-card-header d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        <div>
+                            <span class="audit-count-text" id="totalRegistrosTexto">10 registros encontrados</span>
+                            <span class="badge-solo-lectura">Solo lectura</span>
+                            <span class="active-filter-tag d-none" id="tagFiltroFechaAuditoria">
+                                <i class="bi bi-calendar-event"></i>
+                                <span id="tagFiltroFechaAuditoriaTexto">Filtro activo</span>
+                                <i class="bi bi-x-lg" onclick="limpiarFiltroFechaAuditoria()"></i>
+                            </span>
+                        </div>
+
+                        <!-- NUEVO: barra de acciones (filtrar por fecha / generar reporte) -->
+                        <div class="toolbar-acciones">
+
+                            <!-- Botón: filtrar por fecha -->
+                            <div class="dropdown-panel-wrapper">
+                                <button type="button" class="btn-toolbar-outline" id="btnFiltrarFechaAuditoria" onclick="togglePanel('panelFiltrarFechaAuditoria', 'panelGenerarReporteAuditoria')">
+                                    <i class="bi bi-calendar3"></i> Filtrar por fecha
+                                </button>
+                                <div class="dropdown-panel" id="panelFiltrarFechaAuditoria">
+                                    <div class="dropdown-panel-title">Filtrar registros por fecha</div>
+                                    <div class="quick-date-grid" id="quickDatesAuditoria">
+                                        <button type="button" class="quick-date-btn" data-rango="hoy">Hoy</button>
+                                        <button type="button" class="quick-date-btn" data-rango="ayer">Ayer</button>
+                                        <button type="button" class="quick-date-btn" data-rango="semana">Esta semana</button>
+                                        <button type="button" class="quick-date-btn" data-rango="mes">Este mes</button>
+                                    </div>
+                                    <div class="date-range-row">
+                                        <input type="date" class="form-control custom-input" id="fechaDesdeAuditoria" placeholder="Desde">
+                                        <input type="date" class="form-control custom-input" id="fechaHastaAuditoria" placeholder="Hasta">
+                                    </div>
+                                    <div class="dropdown-panel-actions">
+                                        <button type="button" class="btn-panel-clear" onclick="limpiarFiltroFechaAuditoria()">Limpiar</button>
+                                        <button type="button" class="btn-panel-apply" onclick="aplicarFiltroFechaAuditoria()">Aplicar</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botón: generar reporte -->
+                            <div class="dropdown-panel-wrapper">
+                                <button type="button" class="btn-toolbar-solid" id="btnGenerarReporteAuditoria" onclick="togglePanel('panelGenerarReporteAuditoria', 'panelFiltrarFechaAuditoria')">
+                                    <i class="bi bi-file-earmark-arrow-down"></i> Generar reporte
+                                </button>
+                                <div class="dropdown-panel" id="panelGenerarReporteAuditoria">
+                                    <div class="dropdown-panel-title">Exportar auditoría</div>
+                                    <div class="report-option" onclick="generarReporteAuditoria('pdf')">
+                                        <i class="bi bi-file-earmark-pdf icon-pdf"></i> Exportar a PDF
+                                    </div>
+                                    <div class="report-option" onclick="generarReporteAuditoria('excel')">
+                                        <i class="bi bi-file-earmark-excel icon-excel"></i> Exportar a Excel
+                                    </div>
+                                    <div class="report-option" onclick="generarReporteAuditoria('imprimir')">
+                                        <i class="bi bi-printer icon-print"></i> Imprimir
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table-custom" id="tablaAuditoria">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Acción</th>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cuerpoTablaAuditoria">
+                                <!--
+                                    NOTA PARA MÁS ADELANTE: estas filas están escritas
+                                    "a mano" como maqueta visual. Cuando conectes el
+                                    backend, lo normal es generarlas dinámicamente con
+                                    JavaScript a partir de los datos que te devuelva la
+                                    API, en vez de escribirlas aquí.
+                                -->
+                                <tr>
+                                    <td>
+                                        <div class="audit-user-cell">
+                                            <div class="avatar-sm">A</div>
+                                            <span class="audit-user-name">admin</span>
+                                        </div>
+                                    </td>
+                                    <td>Inicio de sesión exitoso</td>
+                                    <td>2024-06-10</td>
+                                    <td><span class="time-badge">07:32:15</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="audit-user-cell">
+                                            <div class="avatar-sm">P</div>
+                                            <span class="audit-user-name">portero</span>
+                                        </div>
+                                    </td>
+                                    <td>Registro de ingreso — Carlos Rodríguez (ABC-123)</td>
+                                    <td>2024-06-10</td>
+                                    <td><span class="time-badge">07:45:22</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="audit-user-cell">
+                                            <div class="avatar-sm">P</div>
+                                            <span class="audit-user-name">portero</span>
+                                        </div>
+                                    </td>
+                                    <td>Registro de ingreso — María López (XYZ-456)</td>
+                                    <td>2024-06-10</td>
+                                    <td><span class="time-badge">08:10:08</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="audit-user-cell">
+                                            <div class="avatar-sm">A</div>
+                                            <span class="audit-user-name">admin</span>
+                                        </div>
+                                    </td>
+                                    <td>Dispositivo APL-2024-0077 marcado como Pendiente</td>
+                                    <td>2024-06-10</td>
+                                    <td><span class="time-badge">09:15:44</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="audit-user-cell">
+                                            <div class="avatar-sm">M</div>
+                                            <span class="audit-user-name">maria.lopez</span>
+                                        </div>
+                                    </td>
+                                    <td>Actualización de datos personales</td>
+                                    <td>2024-06-10</td>
+                                    <td><span class="time-badge">10:22:33</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="audit-user-cell">
+                                            <div class="avatar-sm">P</div>
+                                            <span class="audit-user-name">portero</span>
+                                        </div>
+                                    </td>
+                                    <td>Registro de ingreso — Andrés Martínez (GHI-321)</td>
+                                    <td>2024-06-10</td>
+                                    <td><span class="time-badge">08:55:11</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="audit-user-cell">
+                                            <div class="avatar-sm">A</div>
+                                            <span class="audit-user-name">admin</span>
+                                        </div>
+                                    </td>
+                                    <td>Eliminación de usuario — ID-6: Laura Torres</td>
+                                    <td>2024-06-09</td>
+                                    <td><span class="time-badge">14:30:07</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="audit-user-cell">
+                                            <div class="avatar-sm">P</div>
+                                            <span class="audit-user-name">portero</span>
+                                        </div>
+                                    </td>
+                                    <td>Registro de nuevo visitante temporal</td>
+                                    <td>2024-06-09</td>
+                                    <td><span class="time-badge">11:05:19</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/componentes.js"></script>
+
+    <!--
+        ===================================================================
+        NUEVO: lógica de los paneles de "Filtrar por fecha" y
+        "Generar reporte". Son funciones de ejemplo (front-end puro).
+        Cuando conectes el backend, dentro de aplicarFiltroFechaAuditoria()
+        y generarReporteAuditoria() debes llamar tu API real en vez de
+        solo mostrar console.log / alert.
+        ===================================================================
+    -->
+    <script>
+        // Abre un panel y cierra el otro (fecha / reporte), o cierra si ya estaba abierto
+        function togglePanel(idAbrir, idCerrar) {
+            const panelAbrir = document.getElementById(idAbrir);
+            const panelCerrar = document.getElementById(idCerrar);
+            if (panelCerrar) panelCerrar.classList.remove('show');
+            if (panelAbrir) panelAbrir.classList.toggle('show');
+        }
+
+        // Cierra los paneles si el usuario hace clic fuera de ellos
+        document.addEventListener('click', function (e) {
+            document.querySelectorAll('.dropdown-panel-wrapper').forEach(function (wrapper) {
+                if (!wrapper.contains(e.target)) {
+                    wrapper.querySelector('.dropdown-panel')?.classList.remove('show');
+                }
+            });
+        });
+
+        // Selección de rango rápido (Hoy, Ayer, Esta semana, Este mes)
+        document.querySelectorAll('#quickDatesAuditoria .quick-date-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('#quickDatesAuditoria .quick-date-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        function aplicarFiltroFechaAuditoria() {
+            const desde = document.getElementById('fechaDesdeAuditoria').value;
+            const hasta = document.getElementById('fechaHastaAuditoria').value;
+            const rangoActivo = document.querySelector('#quickDatesAuditoria .quick-date-btn.active');
+
+            // TODO backend: aquí debes filtrar cuerpoTablaAuditoria según
+            // el rango rápido (rangoActivo?.dataset.rango) o desde/hasta,
+            // o mejor: pedirle a la API los registros ya filtrados.
+            console.log('Filtrar auditoría =>', { rango: rangoActivo?.dataset.rango, desde, hasta });
+
+            const tag = document.getElementById('tagFiltroFechaAuditoria');
+            const tagTexto = document.getElementById('tagFiltroFechaAuditoriaTexto');
+            if (rangoActivo) {
+                tagTexto.textContent = rangoActivo.textContent;
+                tag.classList.remove('d-none');
+            } else if (desde || hasta) {
+                tagTexto.textContent = `${desde || '...'} → ${hasta || '...'}`;
+                tag.classList.remove('d-none');
+            }
+
+            togglePanel('', 'panelFiltrarFechaAuditoria');
+        }
+
+        function limpiarFiltroFechaAuditoria() {
+            document.getElementById('fechaDesdeAuditoria').value = '';
+            document.getElementById('fechaHastaAuditoria').value = '';
+            document.querySelectorAll('#quickDatesAuditoria .quick-date-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tagFiltroFechaAuditoria').classList.add('d-none');
+            // TODO backend: volver a pedir/mostrar todos los registros sin filtro
+        }
+
+        function generarReporteAuditoria(formato) {
+            // TODO backend: reemplazar por la llamada real que genera el
+            // reporte (PDF/Excel) con los registros actualmente filtrados,
+            // o usar window.print() tal cual para "Imprimir".
+            if (formato === 'imprimir') {
+                window.print();
+            } else {
+                console.log('Generar reporte de auditoría en formato:', formato);
+                alert('Generando reporte en formato ' + formato.toUpperCase() + '... (pendiente de conectar al backend)');
+            }
+            togglePanel('', 'panelGenerarReporteAuditoria');
+        }
+    </script>
+</body>
+</html>
